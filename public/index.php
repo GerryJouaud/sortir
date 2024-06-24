@@ -11,6 +11,3 @@ return function (array $context) {
 };
 
 
-// hi , this is me ; nono
-
-//je suis
