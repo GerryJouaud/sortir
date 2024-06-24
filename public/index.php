@@ -1,5 +1,7 @@
 <?php
 
+// Test conflit 1
+
 use App\Kernel;
 
 require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
