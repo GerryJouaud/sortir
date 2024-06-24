@@ -11,7 +11,3 @@ return function (array $context) {
 };
 
 
-// hi , this is me ; nono
-//ceci est un commentaire
-
-//change gbrfr
