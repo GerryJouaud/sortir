@@ -1,6 +1,6 @@
 <?php
 
-// Test conflit 1iom
+// Test conflit 2
 
 use App\Kernel;
 
