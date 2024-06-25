@@ -218,7 +218,6 @@ class AppFixtures extends Fixture{
         $manager->persist($stateEventArchived);
 
         $manager->flush();
-
     }
 }
 
