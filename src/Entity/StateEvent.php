@@ -13,9 +13,6 @@ class StateEvent
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $idStateEvent = null;
-
     #[ORM\Column(length: 255)]
     private ?string $wording = null;
 
