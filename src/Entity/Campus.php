@@ -20,6 +20,8 @@ class Campus
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'campus')]
+    private Collection $events;
     /**
      * @var Collection<int, User>
      */
