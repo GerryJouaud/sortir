@@ -16,7 +16,12 @@
     {% include "menu/nav.html.twig" %}
 </header>
 <main>
+    <div class="container">
 {% block body %}{% endblock %}
+    </div>
 </main>
+<footer>
+    {% include "menu/footer.html.twig" %}
+</footer>
 </body>
 </html>
