@@ -33,6 +33,10 @@ class Event
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
+    #[ORM\ManyToOne(inversedBy: 'events')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?StateEvent $stateEvent = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -110,6 +114,18 @@ class Event
     public function setDescription(string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getStateEvent(): ?StateEvent
+    {
+        return $this->stateEvent;
+    }
+
+    public function setStateEvent(?StateEvent $stateEvent): static
+    {
+        $this->stateEvent = $stateEvent;
 
         return $this;
     }
