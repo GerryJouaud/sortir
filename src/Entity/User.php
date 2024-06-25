@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -32,10 +34,33 @@ class User
     #[ORM\Column]
     private ?bool $state = null;
 
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Campus $Campus = null;
+
+    /**
+     * @var Collection<int, Event>
+     */
+    #[ORM\ManyToMany(targetEntity: Event::class, inversedBy: 'participants')]
+    private Collection $Events;
+
+    /**
+     * @var Collection<int, Event>
+     */
+    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'organizer', orphanRemoval: true)]
+    private Collection $eventsOrganized;
+
+    public function __construct()
+    {
+        $this->Events = new ArrayCollection();
+        $this->eventsOrganized = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
+
 
 
 
@@ -108,6 +133,72 @@ class User
     public function setState(bool $state): static
     {
         $this->state = $state;
+
+        return $this;
+    }
+
+    public function getCampus(): ?Campus
+    {
+        return $this->Campus;
+    }
+
+    public function setCampus(?Campus $Campus): static
+    {
+        $this->Campus = $Campus;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getEvents(): Collection
+    {
+        return $this->Events;
+    }
+
+    public function addEvent(Event $event): static
+    {
+        if (!$this->Events->contains($event)) {
+            $this->Events->add($event);
+        }
+
+        return $this;
+    }
+
+    public function removeEvent(Event $event): static
+    {
+        $this->Events->removeElement($event);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getEventsOrganized(): Collection
+    {
+        return $this->eventsOrganized;
+    }
+
+    public function addEventsOrganized(Event $eventsOrganized): static
+    {
+        if (!$this->eventsOrganized->contains($eventsOrganized)) {
+            $this->eventsOrganized->add($eventsOrganized);
+            $eventsOrganized->setOrganizer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEventsOrganized(Event $eventsOrganized): static
+    {
+        if ($this->eventsOrganized->removeElement($eventsOrganized)) {
+            // set the owning side to null (unless already changed)
+            if ($eventsOrganized->getOrganizer() === $this) {
+                $eventsOrganized->setOrganizer(null);
+            }
+        }
 
         return $this;
     }
