@@ -35,7 +35,7 @@ class Place
     /**
      * @var Collection<int, Event>
      */
-    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'place', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'place')]
     private Collection $events;
 
     public function __construct()

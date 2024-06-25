@@ -35,6 +35,7 @@ class Event
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
+
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
     private ?StateEvent $stateEvent = null;
@@ -53,6 +54,11 @@ class Event
     #[ORM\JoinColumn(nullable: false)]
     private ?Place $place = null;
 
+    #[ORM\ManyToOne(inversedBy: 'events')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Campus $campus = null;
+
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
@@ -62,9 +68,6 @@ class Event
     {
         return $this->id;
     }
-
-
-
 
 
     public function getName(): ?string

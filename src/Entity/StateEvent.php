@@ -15,16 +15,13 @@ class StateEvent
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $idStateEvent = null;
-
     #[ORM\Column(length: 255)]
     private ?string $wording = null;
 
     /**
      * @var Collection<int, Event>
      */
-    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'stateEvent', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'stateEvent', fetch: 'LAZY')]
     private Collection $events;
 
     public function __construct()
