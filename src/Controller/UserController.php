@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/user')]
 class UserController extends AbstractController
@@ -85,23 +86,21 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'user_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
     public function delete(
         Request $request,
         User $user,
         EntityManagerInterface $entityManager
     ): Response
     {
-        //todo
-//        if ($this->isCsrfTokenValid('delete' . $user->getId(),
-//            $request->request->get('_token'))) {
-            $entityManager->remove($user);
-            $entityManager->flush();
+        $entityManager->remove($user);
+        $entityManager->flush();
 
-            $this->addFlash('success', 'Utilisateur supprimé avec succès.');
-        }
+        $this->addFlash('success', 'Utilisateur supprimé avec succès.');
 
-//        return $this->redirectToRoute('user_index');
-//    }
+        return $this->redirectToRoute('user_index');
+    }
+
 
     #[Route('/login', name: 'user_login', methods: ['GET', 'POST'])]
     public function login(
