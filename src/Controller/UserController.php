@@ -84,7 +84,7 @@ class UserController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
+//delete
     #[Route('/{id}', name: 'user_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(

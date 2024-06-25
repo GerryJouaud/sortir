@@ -94,6 +94,7 @@ class StateEventController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+    //delete
     /**
      * @Route("/{id}/delete", name="state_event_delete", methods={"POST"})
      * @IsGranted("ROLE_ADMIN")
