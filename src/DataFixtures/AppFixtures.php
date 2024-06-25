@@ -11,6 +11,7 @@ use App\Entity\Event;
 use App\Entity\Place;
 use App\Entity\StateEvent;
 use App\Entity\User;
+use App\Repository\UserRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
