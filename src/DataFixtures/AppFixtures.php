@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 
 
+// Importation des entités nécessaires
 use App\Entity\Campus;
 use App\Entity\City;
 use App\Entity\Event;
@@ -15,12 +16,12 @@ use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
 
-
 class AppFixtures extends Fixture{
 
     private readonly Generator $faker;
     private UserPasswordHasherInterface $passwordHasher;
 
+    // Constructeur pour initialiser le hasher de mots de passe
     public function __construct(UserPasswordHasherInterface $passwordHasher)
     {
         $this->passwordHasher = $passwordHasher;
@@ -28,7 +29,9 @@ class AppFixtures extends Fixture{
 
     public function load(ObjectManager $manager): void
     {
+        // Création d'un générateur Faker pour les données aléatoires en français
         $faker = Factory::create('fr_FR');
+        // Appel des différentes fonctions d'ajout de données
         $this->addCity($manager);
         $this->addCampus($manager);
         $this->addStateEvent($manager);
@@ -36,12 +39,15 @@ class AppFixtures extends Fixture{
         $this->addUser($manager, $faker);
         $this->addEvent($manager, $faker);
 
+        // Envoi des modifications à la base de données
         $manager->flush();
     }
     public function addUser(ObjectManager $manager, Generator $generator)
     {
+        // Récupération de tous les campus pour assignation aléatoire
         $campus = $manager->getRepository(Campus::class)->findAll();
 
+        // Création de 50 utilisateurs aléatoires
         for ($i = 0; $i < 50; $i++) {
             $user = new User();
             $user
@@ -63,6 +69,7 @@ class AppFixtures extends Fixture{
 
     }
 
+    // Fonction pour ajouter des campus
     public function addCampus(ObjectManager $manager)
     {
         $campusRennes = new Campus();
@@ -88,6 +95,8 @@ class AppFixtures extends Fixture{
         $manager->flush();
 
     }
+
+    // Fonction pour ajouter des villes
     public function addCity(ObjectManager $manager){
         $cityRennes = new City();
         $cityRennes
@@ -117,6 +126,7 @@ class AppFixtures extends Fixture{
 
     }
 
+    // Fonction pour ajouter des événements
     public function addEvent(ObjectManager $manager, Generator $generator)
     {
         $campus = $manager->getRepository(Campus::class)->findAll();
@@ -124,6 +134,7 @@ class AppFixtures extends Fixture{
         $stateEvent = $manager->getRepository(StateEvent::class)->findAll();
         $organizer = $manager ->getRepository(User::class)->findAll();
 
+        // Création de 10 événements aléatoires
         for($i = 0; $i < 10; $i++){
             $event = new Event();
             $event
@@ -143,7 +154,9 @@ class AppFixtures extends Fixture{
         $manager->flush();
     }
 
+    // Fonction pour ajouter des lieux
     public  function addPlace(ObjectManager $manager){
+        // Récupération de toutes les villes pour assignation aléatoire
         $cities = $manager ->getRepository(City::class)->findAll();
         for ($i = 0 ; $i<10; $i++){
             $place = new Place();
@@ -153,14 +166,18 @@ class AppFixtures extends Fixture{
                 ->setLatitude($generator->latitude)
                 ->setLongitude($generator->longitude)
                 ->setCity($generator->randomElement($cities));
+            // Persistance du lieu
             $manager->persist($place);
 
         }
 
         $manager->flush();
     }
+
+    // Fonction pour ajouter des états d'événement
     public function addStateEvent(ObjectManager $manager)
     {
+        // Création et persistance de chaque état d'événement
         $stateEventCreated = new State();
         $stateEventCreated
             ->setLabel("created");

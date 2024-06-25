@@ -10,11 +10,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: CampusRepository::class)]
 class Campus
 {
+
+//    #[ORM\Column]
+//    private ?int $id = null;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
     #[ORM\Column]
     private ?int $idCampus = null;
 
@@ -39,9 +40,14 @@ class Campus
         $this->Event = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getName(): ?string
     {
-        return $this->id;
+        return $this->name;
+    }
+
+    public function setName(?string $name): void
+    {
+        $this->name = $name;
     }
 
     public function getIdCampus(): ?int
@@ -49,24 +55,11 @@ class Campus
         return $this->idCampus;
     }
 
-    public function setIdCampus(int $idCampus): static
+    public function setIdCampus(?int $idCampus): void
     {
         $this->idCampus = $idCampus;
-
-        return $this;
     }
 
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, User>

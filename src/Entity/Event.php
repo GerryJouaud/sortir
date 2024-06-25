@@ -11,11 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 class Event
 {
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
     #[ORM\Column]
     private ?int $idEvent = null;
 
@@ -66,11 +64,6 @@ class Event
     public function __construct()
     {
         $this->participants = new ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function getIdEvent(): ?int

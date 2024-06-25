@@ -10,11 +10,14 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: PlaceRepository::class)]
 class Place
 {
+//    #[ORM\Id]
+//    #[ORM\GeneratedValue]
+//    #[ORM\Column]
+//    private ?int $id = null;
+
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
     #[ORM\Column]
     private ?int $idPlace = null;
 
@@ -45,10 +48,6 @@ class Place
         $this->events = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getIdPlace(): ?int
     {
