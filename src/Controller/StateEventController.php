@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  * @Route("/state-event")
@@ -93,22 +94,18 @@ class StateEventController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
+    //delete
     /**
-     * @Route("/{id}", name="state_event_delete", methods={"POST"})
+     * @Route("/{id}/delete", name="state_event_delete", methods={"POST"})
+     * @IsGranted("ROLE_ADMIN")
      */
-    public function delete(
-        Request $request,
-        StateEvent $stateEvent
-    ): Response
+    public function delete(Request $request, StateEvent $stateEvent): Response
     {
+        $this->entityManager->remove($stateEvent);
+        $this->entityManager->flush();
 
-        //todo
+        $this->addFlash('success', 'Événement d\'état supprimé avec succès.');
 
-            $this->entityManager->remove($stateEvent);
-            $this->entityManager->flush();
-        }
-
-     //   return $this->redirectToRoute('state_event_index');
-   // }
+        return $this->redirectToRoute('state_event_index');
+    }
 }
