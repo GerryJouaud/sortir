@@ -41,17 +41,16 @@ class User
     /**
      * @var Collection<int, Event>
      */
-    #[ORM\ManyToMany(targetEntity: Event::class, inversedBy: 'participants')]
+    #[ORM\ManyToMany(targetEntity: Event::class,  mappedBy: 'user')]
     private Collection $Events;
 
     /**
      * @var Collection<int, Event>
      */
-    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'organizer', orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'oganized', targetEntity: Event::class)]
     private Collection $eventsOrganized;
 
-    public function __construct()
-    {
+    public function __construct()    {
         $this->Events = new ArrayCollection();
         $this->eventsOrganized = new ArrayCollection();
     }
@@ -60,8 +59,6 @@ class User
     {
         return $this->id;
     }
-
-
 
 
 

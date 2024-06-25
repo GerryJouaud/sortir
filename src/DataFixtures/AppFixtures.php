@@ -33,9 +33,10 @@ class AppFixtures extends Fixture{
         // Création d'un générateur Faker pour les données aléatoires en français
         $faker = Factory::create('fr_FR');
         // Appel des différentes fonctions d'ajout de données
-        $this->addCity($manager);
-        $this->addCampus($manager);
-        $this->addStateEvent($manager);
+
+        $this->addCity($manager, $faker);
+        $this->addCampus($manager,$faker);
+        $this->addStateEvent($manager,$faker);
         $this->addPlace($manager, $faker);
         $this->addUser($manager, $faker);
         $this->addEvent($manager, $faker);
@@ -96,6 +97,24 @@ class AppFixtures extends Fixture{
         $manager->flush();
 
     }
+    public  function addPlace(ObjectManager $manager , Generator $generator){
+        // Récupération de toutes les villes pour assignation aléatoire
+        $cities = $manager ->getRepository(City::class)->findAll();
+        for ($i = 0 ; $i<10; $i++){
+            $place = new Place();
+            $place
+                ->setName($generator->word)
+                ->setStreet($generator->streetAddress)
+                ->setLatitude($generator->latitude)
+                ->setLongitude($generator->longitude)
+                ->setCity($generator->randomElement($cities));
+            // Persistance du lieu
+            $manager->persist($place);
+
+        }
+
+        $manager->flush();
+    }
 
     // Fonction pour ajouter des villes
     public function addCity(ObjectManager $manager, Generator $generator){
@@ -105,11 +124,13 @@ class AppFixtures extends Fixture{
             ->setZipCode("35000");
         $manager->persist($cityRennes);
 
+
         $cityNantes = new City();
         $cityNantes
             ->setName("Nantes")
             ->setZipCode("44000");
         $manager->persist($cityNantes);
+
 
         $cityQuimper = new City();
         $cityQuimper
@@ -117,13 +138,14 @@ class AppFixtures extends Fixture{
             ->setZipCode("29000");
         $manager->persist($cityQuimper);
 
+
         $cityNiort = new City();
         $cityNiort
             ->setName("Niort")
             ->setZipCode("79000");
         $manager->persist($cityNiort);
 
-        $manager->flush();
+       $manager->flush();
 
     }
 
@@ -160,24 +182,7 @@ class AppFixtures extends Fixture{
     }
 
     // Fonction pour ajouter des lieux
-    public  function addPlace(ObjectManager $manager , Generator $generator){
-        // Récupération de toutes les villes pour assignation aléatoire
-        $cities = $manager ->getRepository(City::class)->findAll();
-        for ($i = 0 ; $i<10; $i++){
-            $place = new Place();
-            $place
-                ->setName($generator->word)
-                ->setStreet($generator->streetAddress)
-                ->setLatitude($generator->latitude)
-                ->setLongitude($generator->longitude)
-                ->setCity($generator->randomElement($cities));
-            // Persistance du lieu
-            $manager->persist($place);
 
-        }
-
-        $manager->flush();
-    }
 
     // Fonction pour ajouter des états d'événement
     public function addStateEvent(ObjectManager $manager)

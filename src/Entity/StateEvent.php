@@ -21,7 +21,7 @@ class StateEvent
     /**
      * @var Collection<int, Event>
      */
-    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'stateEvent', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'stateEvent', fetch: 'LAZY')]
     private Collection $events;
 
     public function __construct()
