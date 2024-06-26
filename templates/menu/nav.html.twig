@@ -1,23 +1,47 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary " data-bs-theme="dark">
+<nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
     <div class="container-fluid">
-        <a class="navbar-brand" >Sortir</a>
+        <a class="navbar-brand">Sortir</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Evenements</a>
+                    <a class="nav-link active" aria-current="page" href="{{ path('state_event_index') }}">Événements</a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link" href="">Campus</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href=""{{ path('city_list') }}"">Villes</a>
+                    <a class="nav-link" href="{{ path('city_list') }}">Villes</a>
+                </li>
+
+                {% if is_granted('ROLE_USER') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('user_index') }}">Utilisateurs</a>
+                    </li>
+                {% endif %}
+
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('admin_dashboard') }}">Dashboard Admin</a>
+                    </li>
+                {% endif %}
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('user_login') }}">Se connecter</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Se connecter</a>
+                    <a class="nav-link" href="{{ path('user_logout') }}">Sign out </a>
+                </li>
+
+                {# Routes StateEventController #}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('state_event_index') }}">Liste des Événements</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('state_event_new') }}">Nouvel Événement</a>
                 </li>
             </ul>
             <form class="d-flex" role="search">

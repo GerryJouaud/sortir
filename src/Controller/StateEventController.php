@@ -11,24 +11,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/state-event")
- */
+#[Route("/state-event")]
 class StateEventController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
 
-    public function __construct
-    (
-        EntityManagerInterface $entityManager
-    )
+    public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
     }
 
-    /**
-     * @Route("/", name="state_event_index", methods={"GET"})
-     */
+    #[Route('/', name: 'state_event_index', methods: ['GET'])]
     public function index(): Response
     {
         $stateEvents = $this->entityManager->getRepository(StateEvent::class)->findAll();
@@ -38,12 +31,8 @@ class StateEventController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/new", name="state_event_new", methods={"GET","POST"})
-     */
-    public function new(
-        Request $request
-    ): Response
+    #[Route("/new", name: 'state_event_new', methods: ['GET', 'POST'])]
+    public function new(Request $request): Response
     {
         $stateEvent = new StateEvent();
         $form = $this->createForm(StateEventType::class, $stateEvent);
@@ -52,6 +41,8 @@ class StateEventController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->persist($stateEvent);
             $this->entityManager->flush();
+
+            $this->addFlash('success', 'Événement créé avec succès.');
 
             return $this->redirectToRoute('state_event_index');
         }
@@ -62,9 +53,8 @@ class StateEventController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}", name="state_event_show", methods={"GET"})
-     */
+
+    #[Route("/{id}", name: 'state_event_show', methods: ['GET'])]
     public function show(StateEvent $stateEvent): Response
     {
         return $this->render('state_event/show.html.twig', [
@@ -72,19 +62,16 @@ class StateEventController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/{id}/edit", name="state_event_edit", methods={"GET","POST"})
-     */
-    public function edit(
-        Request $request,
-        StateEvent $stateEvent
-    ): Response
+    #[Route("/{id}/edit", name: 'state_event_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, StateEvent $stateEvent): Response
     {
         $form = $this->createForm(StateEventType::class, $stateEvent);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
+
+            $this->addFlash('success', 'Événement modifié avec succès.');
 
             return $this->redirectToRoute('state_event_index');
         }
@@ -94,18 +81,17 @@ class StateEventController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-    //delete
-    /**
-     * @Route("/{id}/delete", name="state_event_delete", methods={"POST"})
-     * @IsGranted("ROLE_ADMIN")
-     */
+
+    #[Route("/{id}/delete", name: 'state_event_delete', methods: ['POST'])]
+    #[IsGranted("ROLE_ADMIN")]
     public function delete(Request $request, StateEvent $stateEvent): Response
     {
         $this->entityManager->remove($stateEvent);
         $this->entityManager->flush();
 
-        $this->addFlash('success', 'Événement d\'état supprimé avec succès.');
+        $this->addFlash('success', 'Événement supprimé avec succès.');
 
         return $this->redirectToRoute('state_event_index');
     }
 }
+

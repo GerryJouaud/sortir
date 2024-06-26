@@ -1,10 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-
-{% endblock %}
+{% block title %}Create New State Event{% endblock %}
 
 {% block body %}
+    <h1>Create New State Event</h1>
 
+    {{ form_start(form) }}
+    {{ form_row(form.wording) }} {# Assuming 'wording' is a field in your form type #}
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    {{ form_end(form) }}
 {% endblock %}
-

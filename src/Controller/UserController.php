@@ -10,8 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 #[Route('/user')]
 class UserController extends AbstractController
@@ -30,7 +30,7 @@ class UserController extends AbstractController
 
     #[Route('/new', name: 'user_new', methods: ['GET', 'POST'])]
     public function new(
-        Request $request,
+        Request                $request,
         EntityManagerInterface $entityManager
     ): Response
     {
@@ -53,18 +53,25 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'user_show', methods: ['GET'])]
-    public function show(User $user): Response
+    #[Route('/user/{id}', name: 'user_show', methods: ['GET'])]
+    public function show(UserRepository $userRepository, int $id): Response
     {
+        $user = $userRepository->find($id);
+
+        if (!$user) {
+            throw new NotFoundHttpException('Utilisateur non trouvé');
+        }
+
         return $this->render('user/show.html.twig', [
             'user' => $user,
         ]);
     }
 
+
     #[Route('/{id}/edit', name: 'user_edit', methods: ['GET', 'POST'])]
     public function edit(
-        Request $request,
-        User $user,
+        Request                $request,
+        User                   $user,
         EntityManagerInterface $entityManager
     ): Response
     {
@@ -84,12 +91,13 @@ class UserController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
 //delete
     #[Route('/{id}', name: 'user_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(
-        Request $request,
-        User $user,
+        Request                $request,
+        User                   $user,
         EntityManagerInterface $entityManager
     ): Response
     {
@@ -101,28 +109,6 @@ class UserController extends AbstractController
         return $this->redirectToRoute('user_index');
     }
 
-
-    #[Route('/login', name: 'user_login', methods: ['GET', 'POST'])]
-    public function login(
-        AuthenticationUtils $authenticationUtils
-    ): Response
-    {
-        // Récupérer l'erreur de login s'il y en a une
-        $error = $authenticationUtils->getLastAuthenticationError();
-
-        // Récupérer le dernier username saisi par l'utilisateur
-        $lastUsername = $authenticationUtils->getLastUsername();
-
-        return $this->render('user/login.html.twig', [
-            'last_username' => $lastUsername,
-            'error' => $error,
-        ]);
-    }
-
-    #[Route('/logout', name: 'user_logout', methods: ['GET'])]
-    public function logout(): void
-    {
-      //todo
-    }
 }
+
 
