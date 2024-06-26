@@ -41,7 +41,7 @@ class User
     /**
      * @var Collection<int, Event>
      */
-    #[ORM\ManyToMany(targetEntity: Event::class,  mappedBy: 'user')]
+    #[ORM\ManyToMany(targetEntity: Event::class,  mappedBy: 'participants')]
     private Collection $Events;
 
     /**
