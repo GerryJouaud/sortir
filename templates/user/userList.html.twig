@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Utilisateurs{% endblock %}
+
+{% block body %}
+    <h1>Liste des Utilisateurs:</h1>
+    {% for user in users %}
+        <div>
+            <p>{{ user.lastName }} | {{ user.firstName }} </p>
+{#            <a href="{{ path('city_details',{"id":city.id}) }}">{{ city.name }}</a>#}
+        </div>
+    {% endfor %}
+
+{#    <a href="{{ path('city_create') }}"><button>Ajouter une ville</button></a>#}
+
+
+{% endblock %}

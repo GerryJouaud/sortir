@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div>{{ place.name }}</div>
+    <div>{{ place.street }}</div>
+    <a href="{{ path('place_update',{"id":place.id}) }}"><button>Modifier un lieu</button></a>
+   <a href="{{ path('place_delete',{"id":place.id}) }}"><button>Supprimer un lieu</button></a>
+
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+

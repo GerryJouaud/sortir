@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lieux{% endblock %}
+
+{% block body %}
+    <h1>Liste des lieux:</h1>
+    {% for place in places %}
+        <div>
+
+            <a href="{{ path('place_details',{"id":place.id}) }}">{{ place.name }}</a>
+        </div>
+    {% endfor %}
+
+    <a href="{{ path('place_create') }}"><button>Ajouter un lieu</button></a>
+
+
+{% endblock %}
