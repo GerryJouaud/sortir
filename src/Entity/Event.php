@@ -26,6 +26,22 @@ class Event
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $duration = null;
 
+    /**
+     * @return \DateTimeInterface|null
+     */
+    public function getDuration(): ?\DateTimeInterface
+    {
+        return $this->duration;
+    }
+
+    /**
+     * @param \DateTimeInterface|null $duration
+     */
+    public function setDuration(?\DateTimeInterface $duration): void
+    {
+        $this->duration = $duration;
+    }
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateLine = null;
 
@@ -43,7 +59,7 @@ class Event
     /**
      * @var Collection<int, User>
      */
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'Events')]
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'events')]
     private Collection $participants;
 
     #[ORM\ManyToOne(inversedBy: 'eventsOrganized')]
@@ -94,17 +110,7 @@ class Event
         return $this;
     }
 
-    public function getDuration(): ?\DateTimeInterface
-    {
-        return $this->duration;
-    }
 
-    public function setDuration(\DateTimeInterface $duration): static
-    {
-        $this->duration = $duration;
-
-        return $this;
-    }
 
     public function getDateLine(): ?\DateTimeInterface
     {
