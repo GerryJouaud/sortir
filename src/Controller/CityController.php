@@ -82,4 +82,17 @@ class CityController extends AbstractController
         ]);
 
     }
+    #[Route('/delete/{id}', name: 'delete')]
+    public function delete(EntityManagerInterface $entityManager,  CityRepository $cityRepository, int $id): Response    {
+        $city = $cityRepository->find($id);
+        if (!$city) {
+            throw $this->createNotFoundException("Cette ville n'a pas été trouvée");
+        }
+        $entityManager->remove($city);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Ville supprimée!');
+        return $this->redirectToRoute('city_list');
+
+    }
 }

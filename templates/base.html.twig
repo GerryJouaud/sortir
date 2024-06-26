@@ -16,6 +16,14 @@
     {% include "menu/nav.html.twig" %}
 </header>
 <main>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div style="background-color: greenyellow" class="flash flash-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
     <div class="container">
 {% block body %}{% endblock %}
     </div>

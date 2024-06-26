@@ -13,17 +13,17 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-#[Route('/user')]
+#[Route('/user',name: 'user_')]
 class UserController extends AbstractController
 {
-    #[Route('/', name: 'user_index', methods: ['GET'])]
-    public function index(
+    #[Route('/', name: 'list')]
+    public function list(
         UserRepository $userRepository
     ): Response
     {
         $users = $userRepository->findAll();
 
-        return $this->render('user/index.html.twig', [
+        return $this->render('user/userList.html.twig', [
             'users' => $users,
         ]);
     }
