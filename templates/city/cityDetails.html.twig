@@ -5,6 +5,7 @@
     <div>{{ city.name }}</div>
     <div>{{ city.zipCode }}</div>
     <a href="{{ path('city_update',{"id":city.id}) }}"><button>Modifier une ville</button></a>
+    <a href="{{ path('city_delete',{"id":city.id}) }}"><button>Supprimer une ville</button></a>
 
 {% endblock %}
 
