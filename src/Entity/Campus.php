@@ -20,7 +20,7 @@ class Campus
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'campus')]
+    #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'campus', orphanRemoval: true)]
     private Collection $events;
     /**
      * @var Collection<int, User>
@@ -38,7 +38,21 @@ class Campus
         return $this->id;
     }
 
+    /**
+     * @return Collection
+     */
+    public function getEvents(): Collection
+    {
+        return $this->events;
+    }
 
+    /**
+     * @param Collection $events
+     */
+    public function setEvents(Collection $events): void
+    {
+        $this->events = $events;
+    }
 
 
     public function getName(): ?string
