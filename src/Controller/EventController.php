@@ -64,7 +64,7 @@ public function create(
             $entityManager->persist($event);
             $entityManager->flush();
 
-            $this->addFlash('success', 'evenement ajoutée!');
+            $this->addFlash('success', "evenement ajoutée! -_*");
             return $this->redirectToRoute('event_list');
         }
 
@@ -73,5 +73,50 @@ public function create(
         ]);
     }
 
+    #[Route('/update/{id}', name: 'update')]
+      public function update(
+          EntityManagerInterface $entityManager,
+          EventRepository $eventRepository,
+          Request $request,
+          int $id
+    ):Response
+    {
+        $event = $eventRepository->find($id);
+        if(!$event){
+            throw $this->createNotFoundException("Cette événement n'a pas été trouvée");
+        }
+
+        $eventForm = $this->createForm(EventType::class, $event);
+        $eventForm->handleRequest($request);
+        if($eventForm->isSubmitted() && $eventForm->isValid()){
+            $entityManager->persist($event);
+            $entityManager->flush();
+
+            $this->addFlash('success', "événement modifiée");
+            return $this->redirectToRoute('event_list');
+        }
+        return $this->render('event/updateEvent.html.twig', [
+            'eventForm' => $eventForm
+        ]);
+    }
+
+    #[Route('/delete/{id}', name: 'delete')]
+        public function delete(
+            EntityManagerInterface $entityManager,
+            EventRepository $eventRepository,
+            Request $request,
+            int $id
+    ):Response
+    {
+        $event = $eventRepository->find($id);
+        if(!$event){
+            throw $this->createNotFoundException("Cette événement n'a pas été trouvée");
+        }
+        $entityManager->remove($event);
+        $entityManager->flush();
+
+        $this->addFlash( 'success' ,'événement supprimée !!');
+        return $this->redirectToRoute('event_list');
+    }
 
 }

@@ -74,7 +74,8 @@
         </div>
     </div>
 
-    <a href="{{ path('event_create') }}"><button>Ajouter une événement</button></a>
+    <a href="{{ path('event_update',{"id":event.id}) }}"><button>Modifier une evenement</button></a>
+    <a href="{{ path('event_delete',{"id":event.id}) }}"><button>Supprimer une événement</button></a>
 
 
 {% endblock %}

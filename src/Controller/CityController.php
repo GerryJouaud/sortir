@@ -62,7 +62,11 @@ class CityController extends AbstractController
     }
 
     #[Route('/update/{id}', name: 'update')]
-    public function update(EntityManagerInterface $entityManager, Request $request, CityRepository $cityRepository, int $id): Response
+    public function update(
+        EntityManagerInterface $entityManager,
+        Request $request, CityRepository $cityRepository,
+        int $id
+    ): Response
     {
         $city = $cityRepository->find($id);
         if (!$city) {
@@ -95,4 +99,5 @@ class CityController extends AbstractController
         return $this->redirectToRoute('city_list');
 
     }
+
 }
