@@ -167,7 +167,7 @@ class AppFixtures extends Fixture{
                 ->setStartDate($faker->dateTimeBetween("-1 month", "+6 month"))
                 ->setDuration($faker->numberBetween(60,240))
                 ->setDateLine($faker->dateTimeBetween("1 month", "+6 month"))
-                ->setMaxParticipants($faker->numberBetween(1,10),10)
+                ->setMaxParticipants($faker->numberBetween(1,10))
                 ->setDescription($faker->paragraph())
                 ->setCampus($faker->randomElement($manager->getRepository(Campus::class)->findAll()))
                 ->setPlace($faker->randomElement($manager->getRepository(Place::class)->findAll()))
