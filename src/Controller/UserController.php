@@ -28,8 +28,8 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'user_new', methods: ['GET', 'POST'])]
-    public function new(
+    #[Route('/create', name: 'create')]
+    public function create(
         Request                $request,
         EntityManagerInterface $entityManager
     ): Response
@@ -53,7 +53,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/user/{id}', name: 'user_show', methods: ['GET'])]
+    #[Route('/details/{id}', name: 'details')]
     public function show(UserRepository $userRepository, int $id): Response
     {
         $user = $userRepository->find($id);
@@ -68,8 +68,8 @@ class UserController extends AbstractController
     }
 
 
-    #[Route('/{id}/edit', name: 'user_edit', methods: ['GET', 'POST'])]
-    public function edit(
+    #[Route('/{id}/update', name: 'update')]
+    public function update(
         Request                $request,
         User                   $user,
         EntityManagerInterface $entityManager
@@ -83,17 +83,16 @@ class UserController extends AbstractController
 
             $this->addFlash('success', 'Profil utilisateur mis à jour avec succès.');
 
-            return $this->redirectToRoute('');//a changer
+            return $this->redirectToRoute('profile_edit');
         }
 
-        return $this->render('user/edit.html.twig', [
+        return $this->render('profile/edit.html.twig', [
             'user' => $user,
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
-//delete
-    #[Route('/{id}', name: 'user_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'delete')]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(
         Request                $request,
@@ -106,7 +105,7 @@ class UserController extends AbstractController
 
         $this->addFlash('success', 'Utilisateur supprimé avec succès.');
 
-        return $this->redirectToRoute('');//a changer
+        return $this->redirectToRoute('profile_edit');
     }
 
 }
