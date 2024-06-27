@@ -7,115 +7,116 @@ use App\Form\EventType;
 use App\Repository\EventRepository;
 use App\Repository\PlaceRepository;
 use App\Repository\StateEventRepository;
-use App\Utils\Update;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/event' , name: 'event_')]
+
+
+
+#[Route('/event', name: 'event_')]
 class EventController extends AbstractController
 {
-    #[Route('/create', name: 'create')]
-    public function create( Request $request,
-                            EventRepository $eventRepository,
-                            PlaceRepository $placeRepository,
-                            StateEventRepository $stateEventRepository,
-                            Update $update
+    #[Route('/', name: 'list')]
+    public function list(
+        EntityManagerInterface $entityManager,
+        EventRepository $eventRepository,
+        PlaceRepository $placeRepository,
+        StateEventRepository $stateEventRepository,
+
     ): Response
     {
 
-        //crée un évènement vide
-        $event = new Event();
-        //je crée un objet état avec pour label created
-        $states = $update->tableState();
-        $state = $states['created'];
-        //je set l'état created à l'évènement
-        $event->setStateEvent($state);
+     $events = $eventRepository->findAll();
+//     $places = $placeRepository->findAll();
 
-        $user = $this->getUser();
-        $event->setOrganizer($user);
-        $event->addUser($user);
+        //Récupération d'un event par son id
+        return $this->render('event/list.html.twig', [
+            'events' => $events,
+        ]);
+    }
 
-        $eventForm = $this->createForm(EventType::class, $event);
-        $eventForm->handleRequest($request);
-
-        if ($eventForm->isSubmitted() && $eventForm->isValid()) {
-            // récupérer les données du formulaire
-            $event = $eventForm->getData();
-
-            $eventRepository->save($event, true);
-            $this->addFlash('success', "Sortie crée avec success!");
+    #[Route('/details/{id}', name: 'details', requirements: ['id' => '\d+'])]
+ public function detail(EventRepository $eventRepository, int $id):Response{
+        $event = $eventRepository->find($id);
+        if(!$event){
+            //Lance une erreur 404
+            throw $this->createNotFoundException('event not found');
         }
-
-        $places = $placeRepository->findAll();
-
-        return $this->render('event/create.html.twig', [
-            'eventForm' => $eventForm->createView(),
-            'places' => $places
-
+        return $this->render('event/EventDetails.html.twig', [
+            'event' => $event,
         ]);
     }
 
 
-
-
-
-    #[Route('/new', name: 'app_event_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/add', name: 'create')]
+public function create(
+                 EntityManagerInterface $entityManager,
+                 Request $request
+    ):Response
     {
         $event = new Event();
-        $form = $this->createForm(EventType::class, $event);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
+        $eventForm = $this->createForm(EventType::class, $event);
+        $eventForm->handleRequest($request);
+        if($eventForm->isSubmitted() && $eventForm->isValid()){
             $entityManager->persist($event);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', "evenement ajoutée! -_*");
+            return $this->redirectToRoute('event_list');
         }
 
-        return $this->render('event/new.html.twig', [
-            'event' => $event,
-            'form' => $form,
+        return $this->render('event/addEvent.html.twig', [
+            'eventForm' => $eventForm
         ]);
     }
 
-    #[Route('/{id}', name: 'app_event_show', methods: ['GET'])]
-    public function show(Event $event): Response
+    #[Route('/update/{id}', name: 'update')]
+      public function update(
+          EntityManagerInterface $entityManager,
+          EventRepository $eventRepository,
+          Request $request,
+          int $id
+    ):Response
     {
-        return $this->render('event/show.html.twig', [
-            'event' => $event,
-        ]);
-    }
+        $event = $eventRepository->find($id);
+        if(!$event){
+            throw $this->createNotFoundException("Cette événement n'a pas été trouvée");
+        }
 
-    #[Route('/{id}/edit', name: 'app_event_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Event $event, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(EventType::class, $event);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
+        $eventForm = $this->createForm(EventType::class, $event);
+        $eventForm->handleRequest($request);
+        if($eventForm->isSubmitted() && $eventForm->isValid()){
+            $entityManager->persist($event);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', "événement modifiée");
+            return $this->redirectToRoute('event_list');
         }
-
-        return $this->render('event/edit.html.twig', [
-            'event' => $event,
-            'form' => $form,
+        return $this->render('event/updateEvent.html.twig', [
+            'eventForm' => $eventForm
         ]);
     }
 
-    #[Route('/{id}', name: 'app_event_delete', methods: ['POST'])]
-    public function delete(Request $request, Event $event, EntityManagerInterface $entityManager): Response
+    #[Route('/delete/{id}', name: 'delete')]
+        public function delete(
+            EntityManagerInterface $entityManager,
+            EventRepository $eventRepository,
+            Request $request,
+            int $id
+    ):Response
     {
-        if ($this->isCsrfTokenValid('delete'.$event->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($event);
-            $entityManager->flush();
+        $event = $eventRepository->find($id);
+        if(!$event){
+            throw $this->createNotFoundException("Cette événement n'a pas été trouvée");
         }
+        $entityManager->remove($event);
+        $entityManager->flush();
 
-        return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+        $this->addFlash( 'success' ,'événement supprimée !!');
+        return $this->redirectToRoute('event_list');
     }
+
 }

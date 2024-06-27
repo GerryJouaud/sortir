@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h1>Afficher une sortie</h1>
+    {# Table de conversion des jours en français => utilisé plus bas #}
+{#    {% set trans_day_hash = {#}
+{#        'Monday': 'Lundi',#}
+{#        'Tuesday': 'Mardi',#}
+{#        'Wednesday': 'Mercredi',#}
+{#        'Thursday': 'Jeudi',#}
+{#        'Friday': 'Vendredi',#}
+{#        'Saturday': 'Samedi',#}
+{#        'Sunday': 'Dimanche'#}
+{#    } %}#}
+
+{#    #}{# Table de conversion des mois en français => utilisé plus bas #}
+{#    {% set trans_month_hash = {#}
+{#        'Jan': 'Janvier',#}
+{#        'Feb': 'Février',#}
+{#        'Mar': 'Mars',#}
+{#        'Apr': 'Avril',#}
+{#        'May': 'Mai',#}
+{#        'Jun': 'Juin',#}
+{#        'Jul': 'Juillet',#}
+{#        'Aug': 'Août',#}
+{#        'Sep': 'Septembre',#}
+{#        'Oct': 'Octobre',#}
+{#        'Nov': 'Novembre',#}
+{#        'Dec': 'Décembre'#}
+{#    } %}#}
+
+
+    <div>Nom de la sortie :{{ event.name }}</div>
+
+    <div>Date et heure de la sortie : {{ event.startDate | date("d-m-Y H:i") | format_datetime(locale='fr') }} </div>
+
+
+    <div>Durée : jusqu'à&nbsp;&nbsp;  {{ event.duration | date("d-m-Y H:i") | format_datetime(locale='fr')   }} </div>
+
+    <div>Date limite d'inscription:{{ event.dateLine| date("d-m-Y H:i")| format_datetime(locale='fr') }}</div>
+
+    <div>Nombre de places :{{ event.maxParticipants }}</div>
+
+    <div>Description et infos :{{ event.description }}</div>
+
+    <div>Detail de la sortie : {{ event.stateEvent }}</div>
+
+    <div>
+        <h2>Détails supplémentaires</h2>
+        <div>
+            <h4>Campus : {{ event.campus.name }}</h4>
+
+{#            <div>Participants : {{ event.participants.firstName }}</div>#}
+
+            <h4>Participants : </h4>
+            <ul>
+                {% for participant in event.participants %}
+                    <li>{{ participant.firstName }}</li>
+                {% endfor %}
+            </ul>
+
+            <h4>Organisateur : {{ event.organizer.lastName }}</h4>
+           <div>
+               <h4>Lieu : {{ event.place.name }}</h4>
+               <ul>
+                   <li>Rue : {{ event.place.street }} </li>
+                   <li>Code postal : {{ event.place.city.zipCode }}</li>
+                   <li>Latitude : {{ event.place.latitude }}</li>
+                   <li>Longitude : {{ event.place.longitude }} </li>
+               </ul>
+           </div>
+
+        </div>
+    </div>
+
+    <a href="{{ path('event_update',{"id":event.id}) }}"><button>Modifier une evenement</button></a>
+    <a href="{{ path('event_delete',{"id":event.id}) }}"><button>Supprimer une événement</button></a>
+
+
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}

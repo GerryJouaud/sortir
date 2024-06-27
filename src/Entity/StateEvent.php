@@ -65,6 +65,13 @@ class StateEvent
         return $this;
     }
 
+    public function __toString(): string
+    {
+        // TODO: Implement __toString() method.
+        return $this->wording;
+
+    }
+
     public function removeEvent(Event $event): static
     {
         if ($this->events->removeElement($event)) {

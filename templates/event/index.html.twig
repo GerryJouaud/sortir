@@ -1,45 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Event index{% endblock %}
+{% block title %}Hello EventController!{% endblock %}
 
 {% block body %}
-    <h1>Event index</h1>
+{#<style>#}
+{#    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }#}
+{#    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }#}
+{#</style>#}
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>StartDate</th>
-                <th>Duration</th>
-                <th>DateLine</th>
-                <th>MaxParticipants</th>
-                <th>Description</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for event in events %}
-            <tr>
-                <td>{{ event.id }}</td>
-                <td>{{ event.name }}</td>
-                <td>{{ event.startDate ? event.startDate|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ event.duration ? event.duration|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ event.dateLine ? event.dateLine|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ event.maxParticipants }}</td>
-                <td>{{ event.description }}</td>
-                <td>
-                    <a href="{{ path('app_event_show', {'id': event.id}) }}">show</a>
-                    <a href="{{ path('app_event_edit', {'id': event.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+{#<div class="example-wrapper">#}
+{#    <h1>Hello {{ controller_name }}! ✅</h1>#}
 
-    <a href="{{ path('app_event_new') }}">Create new</a>
+{#    This friendly message is coming from:#}
+{#    <ul>#}
+{#        <li>Your controller at <code>C:/wamp64/www/sortir/src/Controller/EventController.php</code></li>#}
+{#        <li>Your template at <code>C:/wamp64/www/sortir/templates/event/index.html.twig</code></li>#}
+{#    </ul>#}
+{#</div>#}
 {% endblock %}
