@@ -203,7 +203,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->roles = $roles;
         return $this;
     }
-
+//fgkhkl
     public function getSalt(): ?string
     {
         return null;
