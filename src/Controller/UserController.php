@@ -44,7 +44,7 @@ class UserController extends AbstractController
 
             $this->addFlash('success', 'Utilisateur créé avec succès.');
 
-            return $this->redirectToRoute('user_index');
+            return $this->redirectToRoute('');//a change
         }
 
         return $this->render('user/new.html.twig', [
@@ -83,7 +83,7 @@ class UserController extends AbstractController
 
             $this->addFlash('success', 'Profil utilisateur mis à jour avec succès.');
 
-            return $this->redirectToRoute('user_index');
+            return $this->redirectToRoute('');//a changer
         }
 
         return $this->render('user/edit.html.twig', [
@@ -106,7 +106,7 @@ class UserController extends AbstractController
 
         $this->addFlash('success', 'Utilisateur supprimé avec succès.');
 
-        return $this->redirectToRoute('user_index');
+        return $this->redirectToRoute('');//a changer
     }
 
 }

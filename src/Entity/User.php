@@ -1,20 +1,24 @@
 <?php
-
 namespace App\Entity;
 
-use App\Repository\UserRepository;
+
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User
+//#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL',columns: ['email'], fields: ['mail'])]
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
 
     #[ORM\Column(length: 255)]
     private ?string $lastName = null;
@@ -25,33 +29,32 @@ class User
     #[ORM\Column(length: 15)]
     private ?string $phone = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $mail = null;
+    #[ORM\Column(length: 255, unique: true)]
+    private ?string $email = null;
 
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
     #[ORM\Column]
-    private ?bool $state = null;
+    private ?bool $state = false;
+
+    #[ORM\Column]
+    private array $roles = [];
 
     #[ORM\ManyToOne(inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Campus $Campus = null;
+    private ?Campus $campus = null;
 
-    /**
-     * @var Collection<int, Event>
-     */
-    #[ORM\ManyToMany(targetEntity: Event::class,  mappedBy: 'user')]
-    private Collection $Events;
-
-    /**
-     * @var Collection<int, Event>
-     */
-    #[ORM\OneToMany(mappedBy: 'oganized', targetEntity: Event::class)]
+    #[ORM\OneToMany(mappedBy: 'organizer', targetEntity: Event::class)]
     private Collection $eventsOrganized;
 
-    public function __construct()    {
-        $this->Events = new ArrayCollection();
+
+    #[ORM\ManyToMany(targetEntity: Event::class,  inversedBy: 'participants')]
+    private Collection $events;
+
+    public function __construct()
+    {
+        $this->events = new ArrayCollection();
         $this->eventsOrganized = new ArrayCollection();
     }
 
@@ -59,8 +62,6 @@ class User
     {
         return $this->id;
     }
-
-
 
     public function getLastName(): ?string
     {
@@ -70,7 +71,6 @@ class User
     public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
-
         return $this;
     }
 
@@ -82,7 +82,6 @@ class User
     public function setFirstName(string $firstName): static
     {
         $this->firstName = $firstName;
-
         return $this;
     }
 
@@ -94,19 +93,17 @@ class User
     public function setPhone(string $phone): static
     {
         $this->phone = $phone;
-
         return $this;
     }
 
     public function getMail(): ?string
     {
-        return $this->mail;
+        return $this->email;
     }
 
-    public function setMail(string $mail): static
+    public function setMail(string $email): static
     {
-        $this->mail = $mail;
-
+        $this->email = $email;
         return $this;
     }
 
@@ -118,7 +115,6 @@ class User
     public function setPassword(string $password): static
     {
         $this->password = $password;
-
         return $this;
     }
 
@@ -130,19 +126,17 @@ class User
     public function setState(bool $state): static
     {
         $this->state = $state;
-
         return $this;
     }
 
     public function getCampus(): ?Campus
     {
-        return $this->Campus;
+        return $this->campus;
     }
 
-    public function setCampus(?Campus $Campus): static
+    public function setCampus(?Campus $campus): static
     {
-        $this->Campus = $Campus;
-
+        $this->campus = $campus;
         return $this;
     }
 
@@ -151,22 +145,23 @@ class User
      */
     public function getEvents(): Collection
     {
-        return $this->Events;
+        return $this->events;
     }
 
     public function addEvent(Event $event): static
     {
-        if (!$this->Events->contains($event)) {
-            $this->Events->add($event);
+        if (!$this->events->contains($event)) {
+            $this->events->add($event);
+            $event->addParticipant($this);
         }
-
         return $this;
     }
 
     public function removeEvent(Event $event): static
     {
-        $this->Events->removeElement($event);
-
+        if ($this->events->removeElement($event)) {
+            $event->removeParticipant($this);
+        }
         return $this;
     }
 
@@ -178,25 +173,55 @@ class User
         return $this->eventsOrganized;
     }
 
-    public function addEventsOrganized(Event $eventsOrganized): static
+    public function addEventsOrganized(Event $event): static
     {
-        if (!$this->eventsOrganized->contains($eventsOrganized)) {
-            $this->eventsOrganized->add($eventsOrganized);
-            $eventsOrganized->setOrganizer($this);
+        if (!$this->eventsOrganized->contains($event)) {
+            $this->eventsOrganized->add($event);
+            $event->setOrganizer($this);
         }
-
         return $this;
     }
 
-    public function removeEventsOrganized(Event $eventsOrganized): static
+    public function removeEventsOrganized(Event $event): static
     {
-        if ($this->eventsOrganized->removeElement($eventsOrganized)) {
-            // set the owning side to null (unless already changed)
-            if ($eventsOrganized->getOrganizer() === $this) {
-                $eventsOrganized->setOrganizer(null);
+        if ($this->eventsOrganized->removeElement($event)) {
+            if ($event->getOrganizer() === $this) {
+                $event->setOrganizer(null);
             }
         }
-
         return $this;
+    }
+
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles;
+        return $this;
+    }
+
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+
+    public function eraseCredentials()
+    {
+
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
+    }
+
+
+    public function getUsername(): string
+    {
+        return $this->getUserIdentifier();
     }
 }

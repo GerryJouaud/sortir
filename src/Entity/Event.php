@@ -43,8 +43,10 @@ class Event
     /**
      * @var Collection<int, User>
      */
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'Events')]
+
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'events')]
     private Collection $participants;
+
 
     #[ORM\ManyToOne(inversedBy: 'eventsOrganized')]
     #[ORM\JoinColumn(nullable: false)]
