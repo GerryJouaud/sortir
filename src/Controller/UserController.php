@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Repository\CityRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,8 +29,8 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/create', name: 'create')]
-    public function create(
+    #[Route('/new', name: 'user_new', methods: ['GET', 'POST'])]
+    public function new(
         Request                $request,
         EntityManagerInterface $entityManager
     ): Response
@@ -53,7 +54,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/details/{id}', name: 'details')]
+    #[Route('/user/{id}', name: 'user_show', methods: ['GET'])]
     public function show(UserRepository $userRepository, int $id): Response
     {
         $user = $userRepository->find($id);
@@ -68,31 +69,37 @@ class UserController extends AbstractController
     }
 
 
-    #[Route('/{id}/update', name: 'update')]
+    #[Route('/update/{id}', name: 'update')]
     public function update(
-        Request                $request,
-        User                   $user,
-        EntityManagerInterface $entityManager
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserRepository $userRepository,
+        int $id
     ): Response
     {
-        $form = $this->createForm(UserType::class, $user);
-        $form->handleRequest($request);
+        $user = $userRepository->find($id);
+        if (!$user) {
+            throw $this->createNotFoundException("Cet utilisateur n'a pas été trouvé");
+        }
+        $userForm = $this->createForm(UserType::class, $user);
+        $userForm->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($userForm->isSubmitted() && $userForm->isValid()) {
+            $entityManager->persist($user);
             $entityManager->flush();
 
             $this->addFlash('success', 'Profil utilisateur mis à jour avec succès.');
 
-            return $this->redirectToRoute('profile_edit');
+            return $this->redirectToRoute('user_list');
         }
 
-        return $this->render('profile/edit.html.twig', [
-            'user' => $user,
-            'form' => $form,
+        return $this->render('user/edit.html.twig', [
+            "userForm"=>$userForm
         ]);
     }
 
-    #[Route('/{id}', name: 'delete')]
+//delete
+    #[Route('/{id}', name: 'user_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(
         Request                $request,
@@ -105,7 +112,17 @@ class UserController extends AbstractController
 
         $this->addFlash('success', 'Utilisateur supprimé avec succès.');
 
-        return $this->redirectToRoute('profile_edit');
+        return $this->redirectToRoute('');//a changer
+    }
+    #[\Symfony\Component\Routing\Attribute\Route('/details{id}', name: 'details', requirements: ['id' => '\d+'])]
+    public function details(UserRepository $userRepository, int $id): Response{
+        $user = $userRepository->find($id);
+        if (!$user) {
+            throw $this->createNotFoundException("Cet utilisateur n'a pas été trouvée");
+        }
+        return $this->render('user/userDetails.html.twig', [
+            "user" => $user,
+        ]);
     }
 
 }
