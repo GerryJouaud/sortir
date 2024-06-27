@@ -32,7 +32,7 @@ class EventType extends AbstractType
 
             ->add('dateLine', DateTimeType::class, [
                 'widget' => 'single_text',
-                'label' => "Date limite d'inscription : ",
+                'label' => "Date de fin de la sortie : ",
             ])
 
 

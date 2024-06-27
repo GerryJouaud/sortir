@@ -38,13 +38,14 @@
 
     <div>Durée : {{ event.duration }} minutes </div>
 
-    <div>Date limite d'inscription:{{ event.dateLine| date("d-m-Y H:i")| format_datetime(locale='fr') }}</div>
+    <div>Fin de la sortie:{{ event.dateLine| date("d-m-Y H:i")| format_datetime(locale='fr') }}</div>
 
     <div>Nombre de places :{{ event.maxParticipants }}</div>
 
+
     <div>Description et infos :{{ event.description }}</div>
 
-    <div>Detail de la sortie : {{ event.stateEvent }}</div>
+    <div>Etat de la sortie : {{ event.stateEvent }}</div>
 
     <div>
         <h2>Détails supplémentaires</h2>
