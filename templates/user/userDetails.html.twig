@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div>{{ user.lastName }}</div>
+    <a href="{{ path('user_update',{"id":user.id}) }}"><button>Modifier mon profil</button></a>
+
+
+
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+

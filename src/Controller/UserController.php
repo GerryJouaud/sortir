@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Repository\CityRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -68,27 +69,32 @@ class UserController extends AbstractController
     }
 
 
-    #[Route('/{id}/edit', name: 'user_edit', methods: ['GET', 'POST'])]
-    public function edit(
-        Request                $request,
-        User                   $user,
-        EntityManagerInterface $entityManager
+    #[Route('/update/{id}', name: 'update')]
+    public function update(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserRepository $userRepository,
+        int $id
     ): Response
     {
-        $form = $this->createForm(UserType::class, $user);
-        $form->handleRequest($request);
+        $user = $userRepository->find($id);
+        if (!$user) {
+            throw $this->createNotFoundException("Cet utilisateur n'a pas été trouvé");
+        }
+        $userForm = $this->createForm(UserType::class, $user);
+        $userForm->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($userForm->isSubmitted() && $userForm->isValid()) {
+            $entityManager->persist($user);
             $entityManager->flush();
 
             $this->addFlash('success', 'Profil utilisateur mis à jour avec succès.');
 
-            return $this->redirectToRoute('');//a changer
+            return $this->redirectToRoute('user_list');
         }
 
         return $this->render('user/edit.html.twig', [
-            'user' => $user,
-            'form' => $form->createView(),
+            "userForm"=>$userForm
         ]);
     }
 
@@ -107,6 +113,16 @@ class UserController extends AbstractController
         $this->addFlash('success', 'Utilisateur supprimé avec succès.');
 
         return $this->redirectToRoute('');//a changer
+    }
+    #[\Symfony\Component\Routing\Attribute\Route('/details{id}', name: 'details', requirements: ['id' => '\d+'])]
+    public function details(UserRepository $userRepository, int $id): Response{
+        $user = $userRepository->find($id);
+        if (!$user) {
+            throw $this->createNotFoundException("Cet utilisateur n'a pas été trouvée");
+        }
+        return $this->render('user/userDetails.html.twig', [
+            "user" => $user,
+        ]);
     }
 
 }
