@@ -51,7 +51,7 @@
         <div>
             <h4>Campus : {{ event.campus.name }}</h4>
 
-{#            <div>Participants : {{ event.participants.firstName }}</div>#}
+
 
             <h4>Participants : </h4>
             <ul>
@@ -74,8 +74,9 @@
         </div>
     </div>
 
-    <a href="{{ path('event_update',{"id":event.id}) }}"><button>Modifier une evenement</button></a>
-    <a href="{{ path('event_delete',{"id":event.id}) }}"><button>Supprimer une événement</button></a>
+    <a href="{{ path('event_join',{"id":event.id}) }}"><button>S'inscire</button></a>
+    <a href="{{ path('event_update',{"id":event.id}) }}"><button>Modifier l'évenement</button></a>
+    <a href="{{ path('event_delete',{"id":event.id}) }}"><button>Supprimer l'événement</button></a>
 
 
 {% endblock %}

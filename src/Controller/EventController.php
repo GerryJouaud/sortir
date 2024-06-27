@@ -7,6 +7,7 @@ use App\Form\EventType;
 use App\Repository\EventRepository;
 use App\Repository\PlaceRepository;
 use App\Repository\StateEventRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -61,6 +62,8 @@ public function create(
         $eventForm = $this->createForm(EventType::class, $event);
         $eventForm->handleRequest($request);
         if($eventForm->isSubmitted() && $eventForm->isValid()){
+            $event->setOrganizer($this->getUser());
+
             $entityManager->persist($event);
             $entityManager->flush();
 
@@ -83,7 +86,10 @@ public function create(
     {
         $event = $eventRepository->find($id);
         if(!$event){
-            throw $this->createNotFoundException("Cette événement n'a pas été trouvée");
+            throw $this->createNotFoundException("Cette événement n'a pas été trouvé");
+        }
+        if($event->getOrganizer() !== $this->getUser()){
+            throw $this->createNotFoundException("Vous n'êtes pas l'organisateur, vous ne pouvez pas modifier cet évènement");
         }
 
         $eventForm = $this->createForm(EventType::class, $event);
@@ -118,5 +124,35 @@ public function create(
         $this->addFlash( 'success' ,'événement supprimée !!');
         return $this->redirectToRoute('event_list');
     }
+    #[Route('/join/{id}', name: 'join')]
+    public function join(
+        EntityManagerInterface $entityManager,
+        EventRepository $eventRepository,
+        UserRepository $userRepository,
+        Request $request,
+        int $id
+    ):Response
+    {
+        $user = $userRepository->find($this->getUser()->getId());
+        $event = $eventRepository->find($id);
+        if(!$event){
+            throw $this->createNotFoundException("Cette événement n'a pas été trouvé");
+        }
+        if($event->getOrganizer() == $this->getUser()){
+            throw $this->createNotFoundException("Vous êtes l'organisateur, vous participez déjà à cet évènement");
+        }
+        if($event->getParticipants()->count() == $event->getMaxParticipants()){
+            throw $this->createNotFoundException("Cet évènement est complet");
+        }
 
-}
+        $event->addParticipant($user);
+
+            $entityManager->persist($event);
+            $entityManager->flush();
+
+            $this->addFlash('success', "Vous êtes bien inscrit à");
+
+            return $this->redirectToRoute('event_list');
+       }
+    }
+

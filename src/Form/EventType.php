@@ -52,15 +52,7 @@ class EventType extends AbstractType
                 'class' => StateEvent::class,
                 'choice_label' => 'wording',
             ])
-            ->add('participants', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'firstName',
-                'multiple' => true,
-            ])
-            ->add('organizer', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'firstName',
-            ])
+
             ->add('place', EntityType::class, [
                 'class' => Place::class,
                 'choice_label' => 'name',
