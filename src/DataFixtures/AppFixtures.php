@@ -64,7 +64,10 @@ class AppFixtures extends Fixture{
                 ->setPhone($this->faker->phoneNumber)
                 ->setState($this->faker->boolean)
                 ->setPassword($this->faker->password())
-                ->setCampus($this->faker->randomElement($allCampus));
+                ->setCampus($this->faker->randomElement($allCampus))
+                ->setRoles(['ROLE_USER']);
+
+
 
             $manager->persist($user);
         }
@@ -161,15 +164,16 @@ class AppFixtures extends Fixture{
             $event = new Event();
             $event
                 ->setName($faker->word)
-                ->setStartDate($faker->dateTimeBetween("-2 month", "+6 month"))
-                ->setDuration($faker->dateTimeBetween("-2 month", "+6 month",))
-                ->setDateLine($faker->dateTimeBetween("-1 month", "+6 month"))
+                ->setStartDate($faker->dateTimeBetween("-1 month", "+6 month"))
+                ->setDuration($faker->numberBetween(60,240))
+                ->setDateLine($faker->dateTimeBetween("1 month", "+6 month"))
                 ->setMaxParticipants($faker->numberBetween(1,10),10)
                 ->setDescription($faker->paragraph())
                 ->setCampus($faker->randomElement($manager->getRepository(Campus::class)->findAll()))
                 ->setPlace($faker->randomElement($manager->getRepository(Place::class)->findAll()))
                 ->setStateEvent($faker->randomElement($manager->getRepository(StateEvent::class)->findAll()))
                 ->setOrganizer($faker->randomElement($manager->getRepository(User::class)->findAll()));
+
             $manager->persist($event);
 
         }
