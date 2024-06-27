@@ -23,24 +23,7 @@ class Event
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $startDate = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $duration = null;
 
-    /**
-     * @return \DateTimeInterface|null
-     */
-    public function getDuration(): ?\DateTimeInterface
-    {
-        return $this->duration;
-    }
-
-    /**
-     * @param \DateTimeInterface|null $duration
-     */
-    public function setDuration(?\DateTimeInterface $duration): void
-    {
-        $this->duration = $duration;
-    }
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateLine = null;
@@ -73,6 +56,9 @@ class Event
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Campus $campus = null;
+
+    #[ORM\Column]
+    private ?int $duration = null;
 
 
     public function __construct()
@@ -110,19 +96,23 @@ class Event
         return $this;
     }
 
-
-
+    /**
+     * @return \DateTimeInterface|null
+     */
     public function getDateLine(): ?\DateTimeInterface
     {
         return $this->dateLine;
     }
 
-    public function setDateLine(\DateTimeInterface $dateLine): static
+    /**
+     * @param \DateTimeInterface|null $dateLine
+     */
+    public function setDateLine(?\DateTimeInterface $dateLine): static
     {
         $this->dateLine = $dateLine;
-
         return $this;
     }
+
 
     public function getMaxParticipants(): ?int
     {
@@ -222,5 +212,18 @@ class Event
 
         return $this;
     }
+
+    public function getDuration(): ?int
+    {
+        return $this->duration;
+    }
+
+    public function setDuration(int $duration): static
+    {
+        $this->duration = $duration;
+
+        return $this;
+    }
+
 
 }
