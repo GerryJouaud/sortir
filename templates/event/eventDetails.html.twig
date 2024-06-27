@@ -36,7 +36,7 @@
     <div>Date et heure de la sortie : {{ event.startDate | date("d-m-Y H:i") | format_datetime(locale='fr') }} </div>
 
 
-    <div>Durée : {{ event.duration | date("d-m-Y H:i") | format_datetime(locale='fr')   }} </div>
+    <div>Durée : {{ event.duration }} minutes </div>
 
     <div>Date limite d'inscription:{{ event.dateLine| date("d-m-Y H:i")| format_datetime(locale='fr') }}</div>
 

@@ -96,19 +96,23 @@ class Event
         return $this;
     }
 
-
-
+    /**
+     * @return \DateTimeInterface|null
+     */
     public function getDateLine(): ?\DateTimeInterface
     {
         return $this->dateLine;
     }
 
-    public function setDateLine(\DateTimeInterface $dateLine): static
+    /**
+     * @param \DateTimeInterface|null $dateLine
+     */
+    public function setDateLine(?\DateTimeInterface $dateLine): static
     {
         $this->dateLine = $dateLine;
-
         return $this;
     }
+
 
     public function getMaxParticipants(): ?int
     {
@@ -220,5 +224,6 @@ class Event
 
         return $this;
     }
+
 
 }
