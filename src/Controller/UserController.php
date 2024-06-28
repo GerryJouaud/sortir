@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Repository\EventRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -48,19 +49,6 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'show')]
-    public function show(UserRepository $userRepository, int $id): Response
-    {
-        $user = $userRepository->find($id);
-
-        if (!$user) {
-            throw new NotFoundHttpException('Utilisateur non trouvé');
-        }
-
-        return $this->render('user/show.html.twig', [
-            'user' => $user,
-        ]);
-    }
 
     #[Route('/update/{id}', name: 'update')]
     public function update(Request $request,
@@ -103,15 +91,37 @@ class UserController extends AbstractController
     }
 
     #[Route('/details/{id}', name: 'details', requirements: ['id' => '\d+'])]
-    public function details(UserRepository $userRepository, int $id): Response
+    public function details(UserRepository $userRepository, int $id,): Response
     {
         $user = $userRepository->find($id);
+
         if (!$user) {
             throw $this->createNotFoundException("Cet utilisateur n'a pas été trouvé");
         }
 
         return $this->render('user/userDetails.html.twig', [
             'user' => $user,
+
+        ]);
+    }
+    #[Route('/registrationsList/{id}', name: 'registrationsList', requirements: ['id' => '\d+']), ]
+    public function registrationsList(UserRepository $userRepository, int $id): Response
+    {
+        $user = $userRepository->find($id);
+        if (!$user) {
+            throw $this->createNotFoundException("Cet utilisateur n'a pas été trouvé");
+        }
+        $userRegistrationsList=$user->getEvents();
+        if (!$userRegistrationsList) {
+            throw $this->createNotFoundException("La liste de sorties n'a pas été trouvée !");
+        }
+        if ($userRegistrationsList->isEmpty()) {
+            throw $this->createNotFoundException("Aucune inscription !");
+        }
+
+        return $this->render('user/userRegistrationsList.html.twig', [
+            "user" => $user,
+            "userRegistrationsList" => $userRegistrationsList
         ]);
     }
 }
