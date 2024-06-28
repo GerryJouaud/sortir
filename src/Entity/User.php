@@ -46,6 +46,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     private $plainPassword;
 
+    #[ORM\Column(length: 255)]
+    private ?string $poster = null;
     #[ORM\OneToMany(mappedBy: 'organizer', targetEntity: Event::class)]
     private Collection $eventsOrganized;
 
@@ -238,5 +240,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUsername(): string
     {
         return $this->getUserIdentifier();
+    }
+
+
+    public function getPoster(): ?string
+    {
+        return $this->poster;
+    }
+
+    public function setPoster(string $poster): static
+    {
+        $this->poster = $poster;
+
+        return $this;
     }
 }

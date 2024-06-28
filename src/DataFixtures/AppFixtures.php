@@ -60,12 +60,13 @@ class AppFixtures extends Fixture{
             $user
                 ->setFirstName($this->faker->firstName)
                 ->setLastName($this->faker->lastName())
-                ->setMail($this->faker->email())
+                ->setEmail($this->faker->email())
                 ->setPhone($this->faker->phoneNumber)
                 ->setState($this->faker->boolean)
                 ->setPassword($this->faker->password())
                 ->setCampus($this->faker->randomElement($allCampus))
-                ->setRoles(['ROLE_USER']);
+                ->setRoles(['ROLE_USER'])
+                ->setPoster('image.jpg');
 
 
 

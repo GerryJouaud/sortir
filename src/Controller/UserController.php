@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
+use App\Utils\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,29 +28,48 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'new' )]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/create', name: 'create' )]
+    public function create(
+        Request $request,
+        EntityManagerInterface $entityManager,
+         FileUploader           $fileUploader
+    ): Response
     {
         $user = new User();
+
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            /**
+             * @var UploadedFile $file
+             */
+            //récupération du fichier de type UploadedFile
+            $file = $form->get('poster')->getData();
+            $newFilename = $fileUploader->upload($file,
+                $this->getParameter('sortir_poster_directory'), //a change
+                $user->getFirstName());
+            //setté le nouveau nom dans l'objet
+            $user->setPoster($newFilename);
             $entityManager->persist($user);
             $entityManager->flush();
 
             $this->addFlash('success', 'Utilisateur créé avec succès.');
 
-            return $this->redirectToRoute('user_list');
+            return $this->redirectToRoute('user_list', [
+                'user' => $user,
+                'form' => $form,
+                ]);
         }
 
-        return $this->render('user/new.html.twig', [
+        return $this->render('user/create.html.twig', [
             'user' => $user,
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'show')]
+    #[Route('/{id}', name: 'Recherche')]
     public function show(UserRepository $userRepository, int $id): Response
     {
         $user = $userRepository->find($id);
@@ -57,7 +78,7 @@ class UserController extends AbstractController
             throw new NotFoundHttpException('Utilisateur non trouvé');
         }
 
-        return $this->render('user/show.html.twig', [
+        return $this->render('user/Recherche.html.twig', [
             'user' => $user,
         ]);
     }
@@ -82,11 +103,14 @@ class UserController extends AbstractController
 
             $this->addFlash('success', 'Profil utilisateur mis à jour avec succès.');
 
-            return $this->redirectToRoute('user_list');
+            return $this->redirectToRoute('user_list', [
+                'user' => $user,
+            ]);
         }
 
         return $this->render('user/edit.html.twig', [
-            'userForm' => $userForm->createView(),
+            'userForm' => $userForm,
+            'user' => $user,
         ]);
     }
 

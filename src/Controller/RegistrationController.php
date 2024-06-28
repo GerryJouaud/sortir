@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Utils\FileUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
@@ -22,7 +24,8 @@ class RegistrationController extends AbstractController
         UserPasswordHasherInterface $userPasswordHasher,
         UserAuthenticatorInterface $userAuthenticator,
         EventAuthenticator $eventAuthenticator,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        FileUploader           $fileUploader
     ): Response
     {
         $user = new User();
@@ -38,6 +41,19 @@ class RegistrationController extends AbstractController
                 )
             );
             $user->setRoles(['ROLE_USER']);
+
+            /**
+             * @var UploadedFile $file
+             */
+            //récupération du fichier de type UploadedFile
+            $file = $form->get('poster')->getData();
+            $newFilename = $fileUploader->upload(
+                $file,
+                $this->getParameter('sortir_poster_directory'),
+                $user->getFirstName());
+            //setté le nouveau nom dans l'objet
+            $user->setPoster($newFilename);
+
             $entityManager->persist($user);
             $entityManager->flush();
 

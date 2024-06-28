@@ -4,6 +4,7 @@ namespace App\Form;
 use Symfony\Component\Form\AbstractType;
 use App\Entity\User;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
@@ -11,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use App\Entity\Campus;
@@ -79,7 +81,20 @@ class FormRegistryType extends AbstractType
                         'message' => 'Please select a campus',
                     ]),
                 ],
-            ]);
+            ])
+            ->add('poster', FileType::class, [
+                'mapped' => false,
+                'constraints' => [
+                    new Image(
+                        [
+                            'maxSize' => '10000k',
+                            'mimeTypesMessage' => 'Image format not allowed !',
+                            'maxSizeMessage' => 'The file is too large !'
+                        ]
+                    )
+                ]
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
