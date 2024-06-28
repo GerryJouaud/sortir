@@ -1,4 +1,5 @@
 <?php
+// src/Form/UserType.php
 
 namespace App\Form;
 
@@ -7,6 +8,8 @@ use App\Entity\Event;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -18,18 +21,20 @@ class UserType extends AbstractType
             ->add('lastName')
             ->add('firstName')
             ->add('phone')
-            ->add('password')
-            ->add('state')
-
+            ->add('email')
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
                 'choice_label' => 'id',
             ])
-            ->add('events', EntityType::class, [
-                'class' => Event::class,
-                'choice_label' => 'id',
-                'multiple' => true,
+            ->add('plainPassword', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'invalid_message' => 'Les champs de mot de passe doivent correspondre.',
+                'options' => ['attr' => ['autocomplete' => 'new-password']],
+                'required' => true,
+                'first_options'  => ['label' => 'Password'],
+                'second_options' => ['label' => 'Repeat Password'],
             ])
+
         ;
     }
 
