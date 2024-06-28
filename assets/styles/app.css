@@ -68,6 +68,7 @@ th {
 
 #filters .form-group {
     margin-right: 15px;
+    flex-wrap: wrap;
 }
 
 #filters .form-check {
@@ -108,4 +109,12 @@ th {
 
 .form-inline .btn {
     margin-top: 10px;
+}
+
+
+@media (max-width: 768px) {
+    .form-inline {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
