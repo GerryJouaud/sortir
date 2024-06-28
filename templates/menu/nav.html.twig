@@ -28,6 +28,13 @@
                         <a class="nav-link" href="{{ path('user_list') }}">Utilisateurs</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_registrationapp_register') }}">Registration</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('user_update',{'id':app.user.id}) }}">Update user</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ path('place_list') }}">Lieux</a>
                     </li>
                     <li class="nav-item">
@@ -41,9 +48,9 @@
                     </li>
 
                 {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('user_login') }}">Se connecter </a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('user_login') }}">Se connecter </a>
+                    </li>
                 {% endif %}
 
             </ul>

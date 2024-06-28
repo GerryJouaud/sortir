@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
-use App\Repository\CityRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,13 +13,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-#[Route('/user',name: 'user_')]
+#[Route('/user', name: 'user_')]
 class UserController extends AbstractController
 {
     #[Route('/', name: 'list')]
-    public function list(
-        UserRepository $userRepository
-    ): Response
+    public function list(UserRepository $userRepository): Response
     {
         $users = $userRepository->findAll();
 
@@ -29,11 +26,8 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'user_new', methods: ['GET', 'POST'])]
-    public function new(
-        Request                $request,
-        EntityManagerInterface $entityManager
-    ): Response
+    #[Route('/new', name: 'new' )]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -45,7 +39,7 @@ class UserController extends AbstractController
 
             $this->addFlash('success', 'Utilisateur créé avec succès.');
 
-            return $this->redirectToRoute('');//a change
+            return $this->redirectToRoute('user_list');
         }
 
         return $this->render('user/new.html.twig', [
@@ -54,7 +48,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/user/{id}', name: 'user_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'show')]
     public function show(UserRepository $userRepository, int $id): Response
     {
         $user = $userRepository->find($id);
@@ -68,19 +62,17 @@ class UserController extends AbstractController
         ]);
     }
 
-
     #[Route('/update/{id}', name: 'update')]
-    public function update(
-        Request $request,
-        EntityManagerInterface $entityManager,
-        UserRepository $userRepository,
-        int $id
-    ): Response
+    public function update(Request $request,
+                           EntityManagerInterface $entityManager,
+                           UserRepository $userRepository,
+                           int $id): Response
     {
         $user = $userRepository->find($id);
         if (!$user) {
             throw $this->createNotFoundException("Cet utilisateur n'a pas été trouvé");
         }
+
         $userForm = $this->createForm(UserType::class, $user);
         $userForm->handleRequest($request);
 
@@ -94,37 +86,32 @@ class UserController extends AbstractController
         }
 
         return $this->render('user/edit.html.twig', [
-            "userForm"=>$userForm
+            'userForm' => $userForm->createView(),
         ]);
     }
 
-//delete
-    #[Route('/{id}', name: 'user_delete', methods: ['POST'])]
+    #[Route('/delete/{id}', name: 'delete')]
     #[IsGranted('ROLE_ADMIN')]
-    public function delete(
-        Request                $request,
-        User                   $user,
-        EntityManagerInterface $entityManager
-    ): Response
+    public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
         $entityManager->remove($user);
         $entityManager->flush();
 
         $this->addFlash('success', 'Utilisateur supprimé avec succès.');
 
-        return $this->redirectToRoute('');//a changer
+        return $this->redirectToRoute('user_list');
     }
-    #[\Symfony\Component\Routing\Attribute\Route('/details{id}', name: 'details', requirements: ['id' => '\d+'])]
-    public function details(UserRepository $userRepository, int $id): Response{
+
+    #[Route('/details/{id}', name: 'details', requirements: ['id' => '\d+'])]
+    public function details(UserRepository $userRepository, int $id): Response
+    {
         $user = $userRepository->find($id);
         if (!$user) {
-            throw $this->createNotFoundException("Cet utilisateur n'a pas été trouvée");
+            throw $this->createNotFoundException("Cet utilisateur n'a pas été trouvé");
         }
+
         return $this->render('user/userDetails.html.twig', [
-            "user" => $user,
+            'user' => $user,
         ]);
     }
-
 }
-
-

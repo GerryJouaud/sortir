@@ -2,25 +2,26 @@
 
 namespace App\Controller;
 
-use App\Security\EventAuthenticator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\User;
 use App\Form\FormRegistryType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use App\Security\EventAuthenticator;
 
-    #[Route('/registration', name: 'app_registration')]
+#[Route('/registration', name: 'app_registration')]
 class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
     public function register(
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
-        Security $security,
+        UserAuthenticatorInterface $userAuthenticator,
+        EventAuthenticator $eventAuthenticator,
         EntityManagerInterface $entityManager
     ): Response
     {
@@ -29,7 +30,7 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Encode the plain password
+
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
@@ -42,13 +43,18 @@ class RegistrationController extends AbstractController
 
             $this->addFlash('success', 'Registration successful!');
 
-//            return $this->redirectToRoute('app_main'); //A changer
-            return $security->login($user,EventAuthenticator::class,'main');
+            return $userAuthenticator->authenticateUser(
+                $user,
+                $eventAuthenticator,
+                $request
+            );
+
+            // Optionally, redirect to a specific route after registration
+            // return $this->redirectToRoute('app_main'); // Replace 'app_main' with your main route
         }
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form,
-            'user' => $user,
         ]);
     }
 }
