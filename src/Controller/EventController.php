@@ -4,17 +4,16 @@ namespace App\Controller;
 
 use App\Entity\Event;
 use App\Form\EventType;
+use App\Repository\CampusRepository;
 use App\Repository\EventRepository;
 use App\Repository\PlaceRepository;
 use App\Repository\StateEventRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-
-
 
 
 #[Route('/event', name: 'event_')]
@@ -26,16 +25,29 @@ class EventController extends AbstractController
         EventRepository $eventRepository,
         PlaceRepository $placeRepository,
         StateEventRepository $stateEventRepository,
+        Request $request,
+        CampusRepository $campusRepository
 
     ): Response
     {
 
-     $events = $eventRepository->findAll();
-//     $places = $placeRepository->findAll();
+        $allCampus=$campusRepository->findAll();
+        $filters = [
+            'campus' => $request->query->get('campus'),
+            'search' => $request->query->get('search'),
+            'startDate' => $request->query->get('start_date'),
+            'dateLine' => $request->query->get('dateLine'),
+            'organisateur' => $request->query->get('organisateur'),
+            'inscrit' => $request->query->get('inscrit'),
+            'non_inscrit' => $request->query->get('non_inscrit'),
+            'passees' => $request->query->get('passees'),
+        ];
+        $events = $eventRepository->findByFilters($filters, $this->getUser());
 
         //Récupération d'un event par son id
-        return $this->render('event/list.html.twig', [
+        return $this->render('main/index.html.twig', [
             'events' => $events,
+             "allCampus" => $allCampus,
         ]);
     }
 
@@ -178,5 +190,31 @@ public function create(
 
             return $this->redirectToRoute('event_list');
        }
+
+
+
+    #[Route('/unsubscribe/{id}', name: 'unsubscribe')]
+    public function unsubscribe(
+        EntityManagerInterface $entityManager,
+        EventRepository $eventRepository,
+        UserRepository $userRepository,
+        int $id
+    ): Response
+    {
+        $user = $userRepository->find($this->getUser()->getId());
+        $event = $eventRepository->find($id);
+        if (!$event) {
+            throw $this->createNotFoundException("Cette sortie n'a pas été trouvée");
+        }
+        if (!$event->getParticipants()->contains($user)) {
+            throw $this->createNotFoundException("Vous n'êtes pas inscrit à cette sortie");
+        }
+        $event->removeParticipant($user);
+        $entityManager->persist($event);
+        $entityManager->flush();
+        $this->addFlash('success', "Vous êtes bien désinscrit de cette sortie");
+        return $this->redirectToRoute('event_list');
     }
+
+}
 

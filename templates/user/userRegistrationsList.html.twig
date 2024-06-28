@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes inscriptions{% endblock %}
+
+{% block body %}
+
+    <h1>Liste de mes inscriptions:</h1>
+    <div>{{ user.events.count }}</div>
+
+
+    {% for eventRegistered in userRegistrationsList %}
+        <div>
+            <div>{{ eventRegistered.name }}</div>
+        </div>
+    {% endfor %}
+
+
+
+
+{% endblock %}

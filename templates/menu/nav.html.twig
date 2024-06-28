@@ -27,18 +27,14 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('user_list') }}">Utilisateurs</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_registrationapp_register') }}">Registration</a>
-                    </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('user_update',{'id':app.user.id}) }}">Update user</a>
-                    </li>
+
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('place_list') }}">Lieux</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('place_list') }}">Mes inscriptions</a>
+                        <a class="nav-link" href="{{ path('user_registrationsList',{"id": app.user.id}) }}">Mes inscriptions</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('user_details',{"id": app.user.id}) }}">Mon profil</a>
@@ -51,12 +47,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('user_login') }}">Se connecter </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_registrationapp_register') }}">Registration</a>
+                    </li>
                 {% endif %}
 
             </ul>
             <form class="d-flex" role="search">
                 <input class="form-control me-2" type="search" placeholder="Soirée de fin d'année..." aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Rechercher</button>
+                <button class="btn btn-outline-success" type="submit"> Rechercher</button>
             </form>
         </div>
     </div>
