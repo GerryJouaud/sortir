@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div>mail: {{ user.username }}</div>
+    <div>nom de famille: {{ user.lastName }}</div>
+    <div>prenom: {{ user.firstName }}</div>
+
+    <div> Telephone: {{ user.phone }}</div>
+    <div>Nombre d'inscriptions:{{ user.events.count }}</div>
+    <a href="{{ path('user_update',{"id":user.id}) }}"><button>Modifier mon profil</button></a>
+
+
+
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+

@@ -27,20 +27,29 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('user_list') }}">Utilisateurs</a>
                     </li>
+
+
+
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('place_list') }}">Lieux</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('place_list') }}">Mes inscriptions</a>
+                        <a class="nav-link" href="{{ path('user_registrationsList',{"id": app.user.id}) }}">Mes inscriptions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('user_details',{"id": app.user.id}) }}">Mon profil</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('user_logout') }}">Se Déconnecter ({{ app.user.firstName }}) </a>
                     </li>
 
                 {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('user_login') }}">Se connecter </a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('user_login') }}">Se connecter </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_registrationapp_register') }}">Registration</a>
+                    </li>
                 {% endif %}
 
             </ul>
