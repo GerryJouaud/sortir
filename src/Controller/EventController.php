@@ -178,5 +178,31 @@ public function create(
 
             return $this->redirectToRoute('event_list');
        }
+
+
+
+    #[Route('/unsubscribe/{id}', name: 'unsubscribe')]
+    public function unsubscribe(
+        EntityManagerInterface $entityManager,
+        EventRepository $eventRepository,
+        UserRepository $userRepository,
+        int $id
+    ): Response
+    {
+        $user = $userRepository->find($this->getUser()->getId());
+        $event = $eventRepository->find($id);
+        if (!$event) {
+            throw $this->createNotFoundException("Cette sortie n'a pas été trouvée");
+        }
+        if (!$event->getParticipants()->contains($user)) {
+            throw $this->createNotFoundException("Vous n'êtes pas inscrit à cette sortie");
+        }
+        $event->removeParticipant($user);
+        $entityManager->persist($event);
+        $entityManager->flush();
+        $this->addFlash('success', "Vous êtes bien désinscrit de cette sortie");
+        return $this->redirectToRoute('event_list');
     }
+
+}
 

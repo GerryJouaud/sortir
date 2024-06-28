@@ -1,15 +1,107 @@
+
 {% extends 'base.html.twig' %}
 
 {% block title %}Accueil{% endblock %}
 
 {% block body %}
-<div>
-    <h1> Bienvenue sur le site Sortir</h1>
-    <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce enim elit, tempor in erat sit amet, facilisis porta diam. Sed non felis nisi. Nulla at quam a neque auctor cursus. Sed eleifend ultrices ante vel aliquam. Praesent a ligula interdum, vestibulum tellus sed, fringilla nisi. Ut rhoncus arcu eu orci mattis elementum. Sed ut dignissim diam.
+    <div class="container">
+        <div id="logo">
 
-        Aliquam ultrices a nisl eu ullamcorper. Phasellus tristique sem enim, vitae tincidunt orci iaculis sed. Ut pellentesque purus sit amet sem imperdiet vulputate. Nunc sagittis malesuada erat, vel congue leo hendrerit sed. Suspendisse nec libero id nisi malesuada porttitor. Mauris quis purus sed eros imperdiet aliquet placerat vel nibh. Duis mollis molestie pretium. Vestibulum vitae justo pretium, aliquam turpis et, tristique mauris. Quisque eu diam vel lectus iaculis ullamcorper eu eget justo. Nullam non mi vel orci sagittis blandit.
+            <div id="sidebar" class="text-right">
+                <div>Date du jour : {{ "now"|date("d/m/Y") }}</div>
+                <div>Participant : {{  app.user.firstName }} {{ app.user.lastName }}</div>
+{#                <a href="{{ path('app_logout') }}">Se déconnecter</a>#}
+            </div>
+        </div>
 
-        Integer et magna tristique, faucibus leo vel, aliquet justo. Ut suscipit odio ac lobortis molestie. Vestibulum pulvinar placerat risus et dictum. Donec ultricies pretium eleifend. Nam quis tortor sed dolor ullamcorper convallis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Aliquam non suscipit urna. Sed ac ex ut magna aliquet finibus at et sapien. Maecenas facilisis pretium aliquet. Suspendisse a placerat sapien. Curabitur nec cursus sem, vitae cursus nisi. Sed convallis tempor pretium. Maecenas in interdum massa. Proin id nibh non purus faucibus venenatis. Nam molestie congue quam, ut mollis mi bibendum non.
-    </p>
-</div>
+        <div id="filters">
+            <form method="get" action="{{ path('event_list') }}" class="form-inline mb-3">
+                <div class="form-group mb-2 mr-2">
+                    <label for="campus" class="mr-2">Campus :</label>
+                    <select id="campus" name="campus" class="form-control">
+                        <option value="SAINT_HERBLAIN">SAINT HERBLAIN</option>
+                        <!-- Ajoutez d'autres options de campus si nécessaire -->
+                    </select>
+                </div>
+
+                <div class="form-group mb-2 mr-2">
+                    <label for="search" class="mr-2">Le nom de la sortie contient :</label>
+                    <input type="text" id="search" name="search" class="form-control">
+                </div>
+
+                <div class="form-group mb-2 mr-2">
+                    <label for="start_date" class="mr-2">Entre :</label>
+                    <input type="date" id="start_date" name="start_date" class="form-control">
+                </div>
+
+                <div class="form-group mb-2 mr-2">
+                    <label for="end_date" class="mr-2">et</label>
+                    <input type="date" id="end_date" name="end_date" class="form-control">
+                </div>
+
+                <div class="form-check mb-2 mr-2">
+                    <input type="checkbox" class="form-check-input" id="organisateur" name="organisateur" checked>
+                    <label class="form-check-label" for="organisateur">Sorties dont je suis l'organisateur/trice</label>
+                </div>
+                <div class="form-check mb-2 mr-2">
+                    <input type="checkbox" class="form-check-input" id="inscrit" name="inscrit" checked>
+                    <label class="form-check-label" for="inscrit">Sorties auxquelles je suis inscrit/e</label>
+                </div>
+                <div class="form-check mb-2 mr-2">
+                    <input type="checkbox" class="form-check-input" id="non_inscrit" name="non_inscrit">
+                    <label class="form-check-label" for="non_inscrit">Sorties auxquelles je ne suis pas inscrit/e</label>
+                </div>
+                <div class="form-check mb-2 mr-2">
+                    <input type="checkbox" class="form-check-input" id="passees" name="passees">
+                    <label class="form-check-label" for="passees">Sorties passées</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary mb-2">Rechercher</button>
+            </form>
+        </div>
+
+        <h2>Liste des sorties</h2>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Nom de la sortie</th>
+                <th>Date de la sortie</th>
+                <th>Clôture</th>
+                <th>Inscrits/Places</th>
+                <th>État</th>
+                <th>Inscrit</th>
+                <th>Organisateur</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for event in events %}
+                <tr>
+                    <td>{{ event.name }}</td>
+                    <td>{{ event.startDate|date('d/m/Y H:i') }}</td>
+                    <td>{{ event.dateLine|date('d/m/Y') }}</td>
+                    <td>{{ event.participants|length }}/{{ event.maxParticipants }}</td>
+                    <td>{{ event.stateEvent.wording }}</td>
+                    <td>{{ event.participants.contains(app.user) ? 'X' : '' }}</td>
+                    <td>{{ event.organizer.firstName }} {{ event.organizer.lastName }}</td>
+                    <td class="action-buttons">
+                        <a href="{{ path('event_details', {'id': event.id}) }}" class="btn btn-info btn-sm">Afficher</a>
+                        {% if event.participants.contains(app.user) %}
+                            <a href="{{ path('event_unsubscribe', {'id': event.id}) }}" class="btn btn-warning btn-sm">Se désister</a>
+                        {% else %}
+                            <a href="{{ path('event_join', {'id': event.id}) }}" class="btn btn-success btn-sm">S'inscrire</a>
+                        {% endif %}
+                        {% if event.organizer == app.user %}
+                            <a href="{{ path('event_update', {'id': event.id}) }}" class="btn btn-primary btn-sm">Modifier</a>
+                            <a href="{{ path('event_delete', {'id': event.id}) }}" class="btn btn-danger btn-sm">Supprimer</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ path('event_create') }}" class="btn btn-primary">Créer une sortie</a>
+    </div>
 {% endblock %}

@@ -28,3 +28,84 @@ footer {
     text-align: center;
     padding: 10px;
 }
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ccc;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.action-buttons a {
+    margin-right: 10px;
+}
+#filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#filters .form-group {
+    margin-right: 15px;
+}
+
+#filters .form-check {
+    margin-right: 15px;
+}
+
+#filters .btn {
+    margin-top: 10px;
+}
+
+#filters .form-control {
+    width: auto;
+}
+
+#sidebar {
+    margin-left: auto;
+    text-align: right;
+}
+
+#sidebar div {
+    margin-bottom: 10px;
+}
+
+.form-inline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.form-inline .form-group {
+    margin-right: 15px;
+}
+
+.form-inline .form-check {
+    margin-right: 15px;
+}
+
+.form-inline .btn {
+    margin-top: 10px;
+}
