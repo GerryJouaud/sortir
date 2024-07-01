@@ -48,6 +48,7 @@ class EventController extends AbstractController
         return $this->render('main/index.html.twig', [
             'events' => $events,
              "allCampus" => $allCampus,
+            'filters' => $filters,
         ]);
     }
 

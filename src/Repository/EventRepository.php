@@ -15,52 +15,47 @@ class EventRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Event::class);
     }
+
     public function findByFilters(array $filters, $user)
     {
         $qb = $this->createQueryBuilder('e');
 
-        if (!empty($filters['campus'])) {
+        if ($filters['campus']) {
             $qb->andWhere('e.campus = :campus')
                 ->setParameter('campus', $filters['campus']);
         }
-
-        if (!empty($filters['search'])) {
+        if ($filters['search']) {
             $qb->andWhere('e.name LIKE :search')
                 ->setParameter('search', '%' . $filters['search'] . '%');
         }
-
-        if (!empty($filters['startDate'])) {
+        if ($filters['startDate']) {
             $qb->andWhere('e.startDate >= :startDate')
                 ->setParameter('startDate', $filters['startDate']);
         }
-
-        if (!empty($filters['dateLine'])) {
+        if ($filters['dateLine']) {
             $qb->andWhere('e.dateLine <= :dateLine')
                 ->setParameter('dateLine', $filters['dateLine']);
         }
-
-        if (!empty($filters['organisateur'])) {
-            $qb->andWhere('e.organizer = :user')
-                ->setParameter('user', $user);
+        if ($filters['organisateur']) {
+            $qb->andWhere('e.organizer = :organizer')
+                ->setParameter('organizer', $user);
         }
-
-        if (!empty($filters['inscrit'])) {
+        if ($filters['inscrit']) {
             $qb->andWhere(':user MEMBER OF e.participants')
                 ->setParameter('user', $user);
         }
-
-        if (!empty($filters['non_inscrit'])) {
+        if ($filters['non_inscrit']) {
             $qb->andWhere(':user NOT MEMBER OF e.participants')
                 ->setParameter('user', $user);
         }
-
-        if (!empty($filters['passees'])) {
-            $qb->andWhere('e.dateLine < :now')
+        if ($filters['passees']) {
+            $qb->andWhere('e.startDate < :now')
                 ->setParameter('now', new \DateTime());
         }
 
         return $qb->getQuery()->getResult();
     }
+
 
 //    /**
 //     * @return Event[] Returns an array of Event objects
