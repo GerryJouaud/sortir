@@ -24,10 +24,12 @@ class UserType extends AbstractType
             ->add('firstName')
             ->add('phone')
             ->add('email')
+            // Ajoute un champ pour le campus, en utilisant l'EntityType pour choisir parmi les entités Campus
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
                 'choice_label' => 'id',
             ])
+            // Ajoute un champ pour le mot de passe avec une confirmation
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'Les champs de mot de passe doivent correspondre.',
@@ -36,14 +38,16 @@ class UserType extends AbstractType
                 'first_options'  => ['label' => 'Password'],
                 'second_options' => ['label' => 'Repeat Password'],
             ])
+            // Ajoute un champ pour le fichier du poster
             ->add('poster', FileType::class, [
                 'mapped' => false,
+                'required' => false, // Le champ n'est pas obligatoire
                 'constraints' => [
                     new Image(
                         [
                             'maxSize' => '10000k',
-                            'mimeTypesMessage' => 'Image format not allowed !',
-                            'maxSizeMessage' => 'The file is too large !'
+                            'mimeTypesMessage' => 'Format d\'image non autorisé !',
+                            'maxSizeMessage' => 'Fichier trop volumineux !',
                         ]
                     )
                 ]

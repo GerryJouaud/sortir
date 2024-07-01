@@ -34,13 +34,27 @@
         {{ form_errors(userForm.plainPassword.first) }}
     </div>
     <div class="form-group">
+{#        Affiche l'étiquette du champ#}
         {{ form_label(userForm.plainPassword.second) }}
+{#        Affiche le champ de formulaire avec des attributs supplémentaires, comme une classe CSS pour le style.#}
         {{ form_widget(userForm.plainPassword.second, { 'attr': {'class': 'form-control'} }) }}
+{#        Affiche les erreurs de validation pour le champ#}
         {{ form_errors(userForm.plainPassword.second) }}
     </div>
     <div class="form-group">
-        <img src="{{ asset('images/posters/' ~ user.poster) }}" alt="{{ user.firstName }} - {{ user.id }}">
+        {{ form_label(userForm.poster) }}
+        {{ form_widget(userForm.poster, { 'attr': {'class': 'form-control-file'} }) }}
+        {{ form_errors(userForm.poster) }}
     </div>
+    <!-- Si l'utilisateur a déjà un fichier de poster,
+    il est affiché avec une classe CSS img-thumbnail.-->
+    {% if user.poster %}
+        <div class="form-group">
+            <img src="{{ asset('images/posters/' ~ user.poster) }}"
+                 alt="{{ user.firstName }} - {{ user.id }}"
+                 class="img-thumbnail">
+        </div>
+    {% endif %}
     <button type="submit" class="btn btn-primary">Modifier mon profil</button>
     {{ form_end(userForm) }}
 {% endblock %}

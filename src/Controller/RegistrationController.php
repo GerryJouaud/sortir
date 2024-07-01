@@ -30,35 +30,39 @@ class RegistrationController extends AbstractController
     {
         $user = new User();
         $form = $this->createForm(FormRegistryType::class, $user);
+        // Traitement de la requête HTTP pour manipuler les données du formulaire
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
+            // Hachage du mot de passe avant de l'enregistrer dans la base de données
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
                     $form->get('plainPassword')->getData()
                 )
             );
+            // Attribution du rôle 'ROLE_USER' au nouvel utilisateur
             $user->setRoles(['ROLE_USER']);
 
             /**
              * @var UploadedFile $file
              */
-            //récupération du fichier de type UploadedFile
+            // Récupération du fichier téléchargé de type UploadedFile
             $file = $form->get('poster')->getData();
+            // Utilisation du service FileUploader pour gérer l'upload du fichier
             $newFilename = $fileUploader->upload(
                 $file,
                 $this->getParameter('sortir_poster_directory'),
                 $user->getFirstName());
             //setté le nouveau nom dans l'objet
             $user->setPoster($newFilename);
-
+            // Persistance de l'entité User dans la base de données
             $entityManager->persist($user);
+            // Enregistrement des changements dans la base de données
             $entityManager->flush();
 
             $this->addFlash('success', 'Registration successful!');
-
+            // Authentification automatique de l'utilisateur après l'inscription
             return $userAuthenticator->authenticateUser(
                 $user,
                 $eventAuthenticator,

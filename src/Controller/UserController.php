@@ -45,25 +45,26 @@ class UserController extends AbstractController
             /**
              * @var UploadedFile $file
              */
-            //récupération du fichier de type UploadedFile
+            // Récupère le fichier téléchargé
             $file = $form->get('poster')->getData();
             $newFilename = $fileUploader->upload($file,
-                $this->getParameter('sortir_poster_directory'), //a change
+                $this->getParameter('sortir_poster_directory'),
                 $user->getFirstName());
-            //setté le nouveau nom dans l'objet
+            // Définit le nouveau nom du fichier dans l'objet User
             $user->setPoster($newFilename);
             $entityManager->persist($user);
             $entityManager->flush();
 
             $this->addFlash('success', 'Utilisateur créé avec succès.');
 
+            // Redirige vers la liste des utilisateurs
             return $this->redirectToRoute('user_list', [
                 'user' => $user,
                 'form' => $form,
                 ]);
         }
-
-        return $this->render('user/create.html.twig', [
+// Retourne la vue de création d'utilisateur avec le formulaire
+        return $this->render('', [
             'user' => $user,
             'form' => $form,
         ]);
@@ -72,8 +73,10 @@ class UserController extends AbstractController
     #[Route('/{id}', name: 'Recherche')]
     public function show(UserRepository $userRepository, int $id): Response
     {
+        // Récupère l'utilisateur par son ID
         $user = $userRepository->find($id);
 
+        // Si l'utilisateur n'est pas trouvé, lève une exception
         if (!$user) {
             throw new NotFoundHttpException('Utilisateur non trouvé');
         }
@@ -87,6 +90,7 @@ class UserController extends AbstractController
     public function update(Request $request,
                            EntityManagerInterface $entityManager,
                            UserRepository $userRepository,
+                           FileUploader $fileUploader,
                            int $id): Response
     {
         $user = $userRepository->find($id);
@@ -98,14 +102,25 @@ class UserController extends AbstractController
         $userForm->handleRequest($request);
 
         if ($userForm->isSubmitted() && $userForm->isValid()) {
+            // Vérifier si un fichier a été téléchargé pour le champ 'poster'
+            $file = $userForm->get('poster')->getData();
+            if ($file) {
+  // Télécharge le fichier et récupère le nouveau nom de fichier
+                $newFilename = $fileUploader->upload(
+                    $file,
+                    $this->getParameter('sortir_poster_directory'),
+                    $user->getFirstName()
+                );
+                // Mettez à jour le nom du poster dans l'entité User
+                $user->setPoster($newFilename);
+            }
+
             $entityManager->persist($user);
             $entityManager->flush();
 
             $this->addFlash('success', 'Profil utilisateur mis à jour avec succès.');
 
-            return $this->redirectToRoute('user_list', [
-                'user' => $user,
-            ]);
+            return $this->redirectToRoute('user_details', ['id' => $user->getId()]);
         }
 
         return $this->render('user/edit.html.twig', [
@@ -115,9 +130,11 @@ class UserController extends AbstractController
     }
 
     #[Route('/delete/{id}', name: 'delete')]
+    // Restriction d'accès aux utilisateurs ayant le rôle ROLE_ADMIN
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
+        // Supprime l'utilisateur de la base de données
         $entityManager->remove($user);
         $entityManager->flush();
 
@@ -126,10 +143,16 @@ class UserController extends AbstractController
         return $this->redirectToRoute('user_list');
     }
 
+    // Route pour afficher les détails d'un utilisateur avec des exigences sur l'ID (doit être un nombre)
     #[Route('/details/{id}', name: 'details', requirements: ['id' => '\d+'])]
-    public function details(UserRepository $userRepository, int $id): Response
+    public function details(
+        UserRepository $userRepository,
+        int $id
+    ): Response
     {
+        // Récupère l'utilisateur par son ID
         $user = $userRepository->find($id);
+        // Si l'utilisateur n'est pas trouvé, lève une exception
         if (!$user) {
             throw $this->createNotFoundException("Cet utilisateur n'a pas été trouvé");
         }
