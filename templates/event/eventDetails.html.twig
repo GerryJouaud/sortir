@@ -4,41 +4,43 @@
 
 
 
+    <div class="container-fluid bg-body-secondary rounded p-5 m-5">
+        <h1>{{ event.name }}</h1>
+        <p>{{ event.description }}</p>
 
+        {% if event.participants.count > 0 %}
+        <div class="list-group col-3 ">
+            <a  class="list-group-item list-group-item-action active" aria-current="true">
+                Liste des participants:
+            </a>
 
-
-
-
-
-    <ul>
         {% for participant in event.participants %}
 
-
-            <div class="list-group">
-                <a  class="list-group-item list-group-item-action active" aria-current="true">
-                    Liste des participants:
-                </a>
                 <a href="{{ path('user_details',{"id":participant.id}) }}" class="list-group-item list-group-item-action">{{ participant.firstName }} {{ participant.lastName }}</a>
 
-            </div>
         {% endfor %}
-        <div class="container-fluid">
-            <h4>Lieu : {{ event.place.name }}</h4>
-
-
-            <li>Rue : {{ event.place.street }} </li>
-            <li>Code postal : {{ event.place.city.zipCode }}</li>
-            <li>Latitude : {{ event.place.latitude }}</li>
-            <li>Longitude : {{ event.place.longitude }} </li>
-
         </div>
-    </ul>
+        {% endif %}
+            <div>
+                <h4>Lieu : {{ event.place.name }}</h4>
+
+                <ul>
+                    <li>Rue : {{ event.place.street }} </li>
+                    <li>Code postal : {{ event.place.city.zipCode }}</li>
+                    <li>Latitude : {{ event.place.latitude }}</li>
+                    <li>Longitude : {{ event.place.longitude }} </li>
+                </ul>
+                <a class="btn btn-success " href="{{ path('event_join',{"id":event.id}) }}">S'inscrire</a>
+                {% if app.user == event.organizer %}
+                    <a class="btn btn-primary " href="{{ path('event_update',{"id":event.id}) }}">Modifier l'évenement</a>
+                    <a class="btn btn-danger " href="{{ path('event_delete',{"id":event.id}) }}">Supprimer l'événement</a>
+                {% endif %}
+
+            </div>
 
 
-    <a href="{{ path('event_join',{"id":event.id}) }}"><button>S'inscire</button></a>
-    <a href="{{ path('event_update',{"id":event.id}) }}"><button>Modifier l'évenement</button></a>
-    <a href="{{ path('event_delete',{"id":event.id}) }}"><button>Supprimer l'événement</button></a>
 
+    </div>
 
 {% endblock %}
 
