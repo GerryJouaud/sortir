@@ -69,7 +69,6 @@ class AppFixtures extends Fixture{
                 ->setPoster('image.jpg');
 
 
-
             $manager->persist($user);
         }
 
