@@ -118,3 +118,25 @@ th {
         align-items: flex-start;
     }
 }
+.form-label {
+    font-weight: bold;
+}
+.form-control {
+    border-radius: 0.25rem;
+}
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+.alert-success {
+    margin-bottom: 1rem;
+}
+.card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+}
+body {
+    background: linear-gradient( #dbbadf, #5c57e6);
+    background-attachment: fixed;
+    background-position: center center;
+}

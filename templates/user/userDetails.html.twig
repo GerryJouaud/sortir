@@ -1,39 +1,42 @@
 {% extends 'base.html.twig' %}
-
 {% block body %}
-    <div class="user-details">
-        <h2>Détails de l'utilisateur</h2>
-        <div>
-            <img src="{{ asset('images/posters/' ~ user.poster) }}" alt="Photo de {{ user.firstName }}" class="user-photo">
-        </div>
-        <div>
-            <strong>Email :</strong> {{ user.email }}
-        </div>
-        <div>
-            <strong>Nom de famille :</strong> {{ user.lastName }}
-        </div>
-        <div>
-            <strong>Prénom :</strong> {{ user.firstName }}
-        </div>
-        <div>
-            <strong>Téléphone :</strong> {{ user.phone }}
-        </div>
-        <!-- Affichage du nombre d'inscriptions de l'utilisateur aux événements -->
-        <div>
-            <strong>Nombre d'inscriptions :</strong> {{ user.events|length }}
-        </div>
-        <div>
-            <a href="{{ path('user_update', {'id': user.id}) }}">
-                <button>Modifier mon profil</button>
-            </a>
-
-            <a href="{{ path('event_list') }}">
-                <button>Retour à la page d'accueil</button>
-            </a>
+    <div class="container vh-100 d-flex justify-content-center align-items-center">
+        <div class="card p-4 w-100" style="max-width: 500px;">
+            <div class="user-details mt-3">
+                <h2 class="card-title text-center mb-4">Mon profil</h2>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <img src="{{ asset('images/posters/' ~ user.poster) }}" alt="Photo de {{ user.firstName }}" class="user-photo img-fluid rounded mb-3">
+                    </div>
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                            <strong>Nom de famille :</strong> {{ user.lastName }}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Prénom :</strong> {{ user.firstName }}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Téléphone :</strong> {{ user.phone }}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Email :</strong> {{ user.email }}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Campus :</strong> {{ user.campus.name }}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Nombre d'inscriptions :</strong> {{ user.events|length }}
+                        </div>
+                        <div class="text-center">
+                            <a href="{{ path('user_update', {'id': user.id}) }}" class="btn btn-primary me-2">Modifier mon profil</a>
+                            <a href="{{ path('event_list') }}" class="btn btn-secondary">Retour à la page d'accueil</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
-
 {% block title %}
     Détails de l'utilisateur - {{ user.firstName }} {{ user.lastName }}
 {% endblock %}

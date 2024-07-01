@@ -84,19 +84,17 @@ class FormRegistryType extends AbstractType
             ])
             ->add('poster', FileType::class, [
                 'mapped' => false,
+                'required' => false, // Le champ n'est pas obligatoire
                 'constraints' => [
-                    new Image(
-                        [
-                            'maxSize' => '10000k',
-                            'mimeTypesMessage' => 'Image format not allowed !',
-                            'maxSizeMessage' => 'The file is too large !'
-                        ]
-                    )
-                ]
+                    new Image([
+                        'maxSize' => '10000k',
+                        'mimeTypesMessage' => 'Format d\'image non autorisé !',
+                        'maxSizeMessage' => 'Fichier trop volumineux !',
+                    ])
+                ],
             ])
         ;
     }
-
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
