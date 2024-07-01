@@ -28,11 +28,11 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/create', name: 'create' )]
+    #[Route('/create', name: 'create')]
     public function create(
-        Request $request,
+        Request                $request,
         EntityManagerInterface $entityManager,
-         FileUploader           $fileUploader
+        FileUploader           $fileUploader
     ): Response
     {
         $user = new User();
@@ -61,7 +61,7 @@ class UserController extends AbstractController
             return $this->redirectToRoute('user_list', [
                 'user' => $user,
                 'form' => $form,
-                ]);
+            ]);
         }
 // Retourne la vue de création d'utilisateur avec le formulaire
         return $this->render('', [
@@ -87,11 +87,11 @@ class UserController extends AbstractController
     }
 
     #[Route('/update/{id}', name: 'update')]
-    public function update(Request $request,
+    public function update(Request                $request,
                            EntityManagerInterface $entityManager,
-                           UserRepository $userRepository,
-                           FileUploader $fileUploader,
-                           int $id): Response
+                           UserRepository         $userRepository,
+                           FileUploader           $fileUploader,
+                           int                    $id): Response
     {
         $user = $userRepository->find($id);
         if (!$user) {
@@ -105,7 +105,7 @@ class UserController extends AbstractController
             // Vérifier si un fichier a été téléchargé pour le champ 'poster'
             $file = $userForm->get('poster')->getData();
             if ($file) {
-  // Télécharge le fichier et récupère le nouveau nom de fichier
+                // Télécharge le fichier et récupère le nouveau nom de fichier
                 $newFilename = $fileUploader->upload(
                     $file,
                     $this->getParameter('sortir_poster_directory'),
@@ -147,7 +147,7 @@ class UserController extends AbstractController
     #[Route('/details/{id}', name: 'details', requirements: ['id' => '\d+'])]
     public function details(
         UserRepository $userRepository,
-        int $id
+        int            $id
     ): Response
     {
         // Récupère l'utilisateur par son ID
@@ -159,6 +159,27 @@ class UserController extends AbstractController
 
         return $this->render('user/userDetails.html.twig', [
             'user' => $user,
+        ]);
+    }
+
+    #[Route('/registrationsList/{id}', name: 'registrationsList', requirements: ['id' => '\d+']), ]
+    public function registrationsList(UserRepository $userRepository, int $id): Response
+    {
+        $user = $userRepository->find($id);
+        if (!$user) {
+            throw $this->createNotFoundException("Cet utilisateur n'a pas été trouvé");
+        }
+        $userRegistrationsList = $user->getEvents();
+        if (!$userRegistrationsList) {
+            throw $this->createNotFoundException("La liste de sorties n'a pas été trouvée !");
+        }
+        if ($userRegistrationsList->isEmpty()) {
+            throw $this->createNotFoundException("Aucune inscription !");
+        }
+
+        return $this->render('user/userRegistrationsList.html.twig', [
+            "user" => $user,
+            "userRegistrationsList" => $userRegistrationsList
         ]);
     }
 }
