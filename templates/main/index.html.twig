@@ -8,8 +8,14 @@
     <div class="container">
         <div id="logo">
             <div id="sidebar" class="text-right">
+
                 <div>Date du jour : {{ "now"|date("d/m/Y") }}</div>
+
+                {% if app.user %}
                 <div>Participant : {{ app.user.firstName }} {{ app.user.lastName }}</div>
+                {% endif %}
+
+
             </div>
         </div>
 
