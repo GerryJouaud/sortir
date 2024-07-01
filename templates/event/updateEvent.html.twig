@@ -1,13 +1,115 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Modifier une sortie{% endblock %}
+
+{% block stylesheets %}
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-control {
+            width: 100%;
+        }
+        .form-row .form-group {
+            flex: 1;
+        }
+        .form-actions {
+            margin-top: 2rem;
+        }
+        .form-inline .form-group {
+            margin-right: 1rem;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
 
     {{ form_start(eventForm) }}
-    <button>Modifier la sortie</button>
+
+    <div class="form-group">
+        {{ form_label(eventForm.name) }}
+        {{ form_widget(eventForm.name, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(eventForm.startDate) }}
+        {{ form_widget(eventForm.startDate, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(eventForm.dateLine) }}
+        {{ form_widget(eventForm.dateLine, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group">
+        {{ form_label(eventForm.stateEvent) }}
+        {{ form_widget(eventForm.stateEvent, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group">
+        {{ form_label(eventForm.place) }}
+        {{ form_widget(eventForm.place, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+
+    <div class="form-group">
+        {{ form_label(eventForm.maxParticipants) }}
+        {{ form_widget(eventForm.maxParticipants, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="form-group form-inline">
+        {{ form_label(eventForm.duration) }}
+        {{ form_widget(eventForm.duration, {'attr': {'class': 'form-control'}}) }}
+        <label class="ml-2">minutes</label>
+    </div>
+
+    <div class="form-group">
+        {{ form_label(eventForm.description) }}
+        {{ form_widget(eventForm.description, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(eventForm.campus) }}
+        {{ form_widget(eventForm.campus, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="form-group">
+        <label for="city">Ville</label>
+        <input type="text" id="city" name="city" class="form-control">
+    </div>
+
+    <div class="form-group">
+        <label for="place">Lieu</label>
+        <input type="text" id="place" name="place" class="form-control">
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="street">Rue</label>
+            <input type="text" id="street" name="street" class="form-control">
+        </div>
+
+        <div class="form-group col-md-6">
+            <label for="postalCode">Code postal</label>
+            <input type="text" id="postalCode" name="postalCode" class="form-control">
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="latitude">Latitude</label>
+            <input type="text" id="latitude" name="latitude" class="form-control">
+        </div>
+
+        <div class="form-group col-md-6">
+            <label for="longitude">Longitude</label>
+            <input type="text" id="longitude" name="longitude" class="form-control">
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Modifier la sortie</button>
+    </div>
+
     {{ form_end(eventForm) }}
-
-{% endblock %}
-
-{% block title %}
 
 {% endblock %}

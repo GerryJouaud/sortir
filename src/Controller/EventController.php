@@ -32,6 +32,7 @@ class EventController extends AbstractController
     {
 
         $allCampus=$campusRepository->findAll();
+
         $filters = [
             'campus' => $request->query->get('campus'),
             'search' => $request->query->get('search'),
@@ -47,7 +48,8 @@ class EventController extends AbstractController
         //Récupération d'un event par son id
         return $this->render('main/index.html.twig', [
             'events' => $events,
-             "allCampus" => $allCampus,
+             'allCampus' => $allCampus,
+            'filters' => $filters,
         ]);
     }
 
