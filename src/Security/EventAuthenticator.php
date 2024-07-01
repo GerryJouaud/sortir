@@ -52,7 +52,7 @@ class EventAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($targetPath);
         }
 
-        return new RedirectResponse($this->urlGenerator->generate('state_event_index'));
+        return new RedirectResponse($this->urlGenerator->generate("event_list"));
     }
 
     protected function getLoginUrl(Request $request): string

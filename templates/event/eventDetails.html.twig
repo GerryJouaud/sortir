@@ -2,83 +2,45 @@
 
 {% block body %}
 
-    <h1>Afficher une sortie</h1>
-    {# Table de conversion des jours en français => utilisé plus bas #}
-{#    {% set trans_day_hash = {#}
-{#        'Monday': 'Lundi',#}
-{#        'Tuesday': 'Mardi',#}
-{#        'Wednesday': 'Mercredi',#}
-{#        'Thursday': 'Jeudi',#}
-{#        'Friday': 'Vendredi',#}
-{#        'Saturday': 'Samedi',#}
-{#        'Sunday': 'Dimanche'#}
-{#    } %}#}
-
-{#    #}{# Table de conversion des mois en français => utilisé plus bas #}
-{#    {% set trans_month_hash = {#}
-{#        'Jan': 'Janvier',#}
-{#        'Feb': 'Février',#}
-{#        'Mar': 'Mars',#}
-{#        'Apr': 'Avril',#}
-{#        'May': 'Mai',#}
-{#        'Jun': 'Juin',#}
-{#        'Jul': 'Juillet',#}
-{#        'Aug': 'Août',#}
-{#        'Sep': 'Septembre',#}
-{#        'Oct': 'Octobre',#}
-{#        'Nov': 'Novembre',#}
-{#        'Dec': 'Décembre'#}
-{#    } %}#}
 
 
-    <div>Nom de la sortie :{{ event.name }}</div>
+    <div class="container-fluid bg-body-secondary rounded p-5 m-5">
+        <h1>{{ event.name }}</h1>
+        <p>{{ event.description }}</p>
 
-    <div>Date et heure de la sortie : {{ event.startDate | date("d-m-Y H:i") | format_datetime(locale='fr') }} </div>
+        {% if event.participants.count > 0 %}
+        <div class="list-group col-3 ">
+            <a  class="list-group-item list-group-item-action active" aria-current="true">
+                Liste des participants:
+            </a>
 
+        {% for participant in event.participants %}
 
-    <div>Durée : {{ event.duration }} minutes </div>
+                <a href="{{ path('user_details',{"id":participant.id}) }}" class="list-group-item list-group-item-action">{{ participant.firstName }} {{ participant.lastName }}</a>
 
-    <div>Fin de la sortie:{{ event.dateLine| date("d-m-Y H:i")| format_datetime(locale='fr') }}</div>
-
-    <div>Nombre de places :{{ event.maxParticipants }}</div>
-
-
-    <div>Description et infos :{{ event.description }}</div>
-
-    <div>Etat de la sortie : {{ event.stateEvent }}</div>
-
-    <div>
-        <h2>Détails supplémentaires</h2>
-        <div>
-            <h4>Campus : {{ event.campus.name }}</h4>
-
-
-
-            <h4>Participants : </h4>
-            <ul>
-                {% for participant in event.participants %}
-                    <li>{{ participant.firstName }}</li>
-                {% endfor %}
-            </ul>
-
-            <h4>Organisateur : {{ event.organizer.lastName }}</h4>
-           <div>
-               <h4>Lieu : {{ event.place.name }}</h4>
-               <ul>
-                   <li>Rue : {{ event.place.street }} </li>
-                   <li>Code postal : {{ event.place.city.zipCode }}</li>
-                   <li>Latitude : {{ event.place.latitude }}</li>
-                   <li>Longitude : {{ event.place.longitude }} </li>
-               </ul>
-           </div>
-
+        {% endfor %}
         </div>
+        {% endif %}
+            <div>
+                <h4>Lieu : {{ event.place.name }}</h4>
+
+                <ul>
+                    <li>Rue : {{ event.place.street }} </li>
+                    <li>Code postal : {{ event.place.city.zipCode }}</li>
+                    <li>Latitude : {{ event.place.latitude }}</li>
+                    <li>Longitude : {{ event.place.longitude }} </li>
+                </ul>
+                <a class="btn btn-success " href="{{ path('event_join',{"id":event.id}) }}">S'inscrire</a>
+                {% if app.user == event.organizer %}
+                    <a class="btn btn-primary " href="{{ path('event_update',{"id":event.id}) }}">Modifier l'évenement</a>
+                    <a class="btn btn-danger " href="{{ path('event_delete',{"id":event.id}) }}">Supprimer l'événement</a>
+                {% endif %}
+
+            </div>
+
+
+
     </div>
-
-    <a href="{{ path('event_join',{"id":event.id}) }}"><button>S'inscire</button></a>
-    <a href="{{ path('event_update',{"id":event.id}) }}"><button>Modifier l'évenement</button></a>
-    <a href="{{ path('event_delete',{"id":event.id}) }}"><button>Supprimer l'événement</button></a>
-
 
 {% endblock %}
 

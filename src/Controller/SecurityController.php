@@ -13,7 +13,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
         public function login(AuthenticationUtils $authenticationUtils): Response
         {
             if ($this->getUser()) {
-                return $this->redirectToRoute('state_event_index');
+                return $this->redirectToRoute('event_list');
             }
 
             // Récupérer l'erreur de login s'il y en a une
