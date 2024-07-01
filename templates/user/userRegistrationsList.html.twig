@@ -5,13 +5,23 @@
 {% block body %}
 
     <h1>Liste de mes inscriptions:</h1>
-    <div>{{ user.events.count }}</div>
+
+
+
 
 
     {% for eventRegistered in userRegistrationsList %}
-        <div>
-            <div>{{ eventRegistered.name }}</div>
+
+
+        <div class="card text-center mb-3" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{ eventRegistered.name }}</h5>
+                <p class="card-text">{{ eventRegistered.description }}</p>
+                <a href="{{ path('event_details',{"id":eventRegistered.id}) }}" class="btn btn-primary">Afficher </a>
+            </div>
         </div>
+
+
     {% endfor %}
 
 
