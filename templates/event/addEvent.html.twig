@@ -1,12 +1,14 @@
 {% extends 'base.html.twig' %}
-{% form_theme eventForm  'views/form_theme/form_theme_addEvent.html.twig' %}
+
 
 {% block title %}Ajouter une sortie{% endblock %}
 
 
 {% block body %}
+
     <div class="container bg-light rounded mx-3 my-3">
     {{ form_start(eventForm)}}
     {{ form_end(eventForm) }}
     </div>
+
 {% endblock %}

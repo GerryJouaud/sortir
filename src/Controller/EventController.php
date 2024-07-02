@@ -54,7 +54,9 @@ class EventController extends AbstractController
     }
 
     #[Route('/details/{id}', name: 'details', requirements: ['id' => '\d+'])]
- public function detail(EventRepository $eventRepository, int $id):Response{
+ public function detail(EventRepository $eventRepository, UserRepository $userRepository, int $id):Response{
+
+        $user = $userRepository->find($this->getUser()->getId());
         $event = $eventRepository->find($id);
         if(!$event){
             //Lance une erreur 404
@@ -62,6 +64,7 @@ class EventController extends AbstractController
         }
         return $this->render('event/EventDetails.html.twig', [
             'event' => $event,
+            'user' => $user,
         ]);
     }
 
@@ -225,6 +228,10 @@ public function create(
         if (!$event->getParticipants()->contains($user)) {
             $this->addFlash('error', "Vous n'êtes pas inscrit à cette sortie");
         }
+        if (!$event->getStartDate() > new \DateTime('now') ) {
+            $this->addFlash('error', "La sortie a débutée, vous ne pouvez vous désinscrire");
+        }
+
         $event->removeParticipant($user);
         $entityManager->persist($event);
         $entityManager->flush();

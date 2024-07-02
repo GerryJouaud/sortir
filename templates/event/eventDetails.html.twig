@@ -30,7 +30,16 @@
                     <li>Latitude : {{ event.place.latitude }}</li>
                     <li>Longitude : {{ event.place.longitude }} </li>
                 </ul>
-                <a class="btn btn-success " href="{{ path('event_join',{"id":event.id}) }}">S'inscrire</a>
+
+
+                {% if event.participants.contains(user) %}
+                <a class="btn btn-warning " href="{{ path('event_unsubscribe',{"id":event.id}) }}">Se désinscrire</a>
+                    {% else %}
+                        <a class="btn btn-success " href="{{ path('event_join',{"id":event.id}) }}">S'inscrire</a>
+                {% endif %}
+
+
+
                 {% if app.user == event.organizer %}
                     <a class="btn btn-primary " href="{{ path('event_update',{"id":event.id}) }}">Modifier l'évenement</a>
                     <a class="btn btn-danger " href="{{ path('event_delete',{"id":event.id}) }}">Supprimer l'événement</a>
