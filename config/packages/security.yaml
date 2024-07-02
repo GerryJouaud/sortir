@@ -25,10 +25,17 @@ security:
                 lifetime: 604800
                 path: /
 
+
     access_control:
-        - { path: ^/login, roles: PUBLIC_ACCESS }
-        - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/profile, roles: ROLE_USER }
+         - { path: ^/login, roles: PUBLIC_ACCESS }
+         - { path: ^/admin, roles: ROLE_ADMIN }
+         - { path: ^/profile, roles: ROLE_USER }
+         - { path: ^/user, roles: ROLE_USER }
+         - { path: ^/user/create, roles: ROLE_USER }
+         - { path: ^/user/update, roles: ROLE_USER }
+         - { path: '^/user/delete/\d+$', roles: ROLE_ADMIN }
+         - { path: '^/user/details/\d+$', roles: ROLE_USER }
+         - { path: '^/user/registrationsList/\d+$', roles: ROLE_USER }
 
     role_hierarchy:
         ROLE_ADMIN: ROLE_USER

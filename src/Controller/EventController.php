@@ -161,6 +161,14 @@ public function create(
     {
         $statesEvent = $stateEventRepository->findAll();
         $stateEventOpen=$statesEvent[1]; // Evenement "Open"
+
+        $user = $this->getUser();
+        if (!$user) {
+            $this->addFlash('danger', "Vous devez être connecté pour rejoindre une sortie.");
+            return $this->redirectToRoute('user_login'); // Redirige vers la page de connexion
+        }
+
+
         $user = $userRepository->find($this->getUser()->getId()); // Utilisateur connecté
         $event = $eventRepository->find($id);
         if(!$event){

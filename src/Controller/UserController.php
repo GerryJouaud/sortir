@@ -12,10 +12,12 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 #[Route('/user', name: 'user_')]
+#[IsGranted('ROLE_USER')] // Accessible seulement aux utilisateurs authentifiés
 class UserController extends AbstractController
 {
     #[Route('/', name: 'list')]
@@ -29,6 +31,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
+    #[IsGranted('ROLE_USER')] // Accessible seulement aux utilisateurs authentifiés
     public function create(
         Request                $request,
         EntityManagerInterface $entityManager,
@@ -71,6 +74,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'Recherche')]
+    #[IsGranted('ROLE_USER')] // Accessible seulement aux utilisateurs authentifiés
     public function show(UserRepository $userRepository, int $id): Response
     {
         // Récupère l'utilisateur par son ID
@@ -130,7 +134,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/delete/{id}', name: 'delete')]
-    // Restriction d'accès aux utilisateurs ayant le rôle ROLE_ADMIN
+       // Restriction d'accès aux utilisateurs ayant le rôle ROLE_ADMIN
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
@@ -145,6 +149,7 @@ class UserController extends AbstractController
 
     // Route pour afficher les détails d'un utilisateur avec des exigences sur l'ID (doit être un nombre)
     #[Route('/details/{id}', name: 'details', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_USER')] // Accessible seulement aux utilisateurs authentifiés
     public function details(
         UserRepository $userRepository,
         int            $id
@@ -152,6 +157,11 @@ class UserController extends AbstractController
     {
         // Récupère l'utilisateur par son ID
         $user = $userRepository->find($id);
+        // Vérifie si l'utilisateur connecté peut accéder à cet utilisateur
+        if (!$this->isGranted('ROLE_ADMIN') && $user !== $this->getUser()) {
+            throw new AccessDeniedException('Vous n\'avez pas le droit d\'accéder à cet utilisateur.');
+        }
+
         // Si l'utilisateur n'est pas trouvé, lève une exception
         if (!$user) {
             throw $this->createNotFoundException("Cet utilisateur n'a pas été trouvé");
@@ -163,6 +173,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/registrationsList/{id}', name: 'registrationsList', requirements: ['id' => '\d+']), ]
+    #[IsGranted('ROLE_USER')] // Accessible seulement aux utilisateurs authentifiés
     public function registrationsList(UserRepository $userRepository, int $id): Response
     {
         $user = $userRepository->find($id);
