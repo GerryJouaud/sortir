@@ -1,60 +1,52 @@
 {% extends 'base.html.twig' %}
 {% block title %}Modifier Mon Profil{% endblock %}
 {% block body %}
-    <h1>Modifier Mon Profil</h1>
-    {{ form_start(userForm) }}
-    <div class="form-group">
-        {{ form_label(userForm.firstName) }}
-        {{ form_widget(userForm.firstName, { 'attr': {'class': 'form-control'} }) }}
-        {{ form_errors(userForm.firstName) }}
-    </div>
-    <div class="form-group">
-        {{ form_label(userForm.lastName) }}
-        {{ form_widget(userForm.lastName, { 'attr': {'class': 'form-control'} }) }}
-        {{ form_errors(userForm.lastName) }}
-    </div>
-    <div class="form-group">
-        {{ form_label(userForm.phone) }}
-        {{ form_widget(userForm.phone, { 'attr': {'class': 'form-control'} }) }}
-        {{ form_errors(userForm.phone) }}
-    </div>
-    <div class="form-group">
-        {{ form_label(userForm.email) }}
-        {{ form_widget(userForm.email, { 'attr': {'class': 'form-control'} }) }}
-        {{ form_errors(userForm.email) }}
-    </div>
-    <div class="form-group">
-        {{ form_label(userForm.campus) }}
-        {{ form_widget(userForm.campus, { 'attr': {'class': 'form-control'} }) }}
-        {{ form_errors(userForm.campus) }}
-    </div>
-{#    <div class="form-group">#}
-{#        {{ form_label(userForm.plainPassword.first) }}#}
-{#        {{ form_widget(userForm.plainPassword.first, { 'attr': {'class': 'form-control'} }) }}#}
-{#        {{ form_errors(userForm.plainPassword.first) }}#}
-{#    </div>#}
-{#    <div class="form-group">#}
-{#        Affiche l'étiquette du champ#}
-{#        {{ form_label(userForm.plainPassword.second) }}#}
-{#        Affiche le champ de formulaire avec des attributs supplémentaires, comme une classe CSS pour le style.#}
-{#        {{ form_widget(userForm.plainPassword.second, { 'attr': {'class': 'form-control'} }) }}#}
-{#        Affiche les erreurs de validation pour le champ#}
-{#        {{ form_errors(userForm.plainPassword.second) }}#}
-{#    </div>#}
-    <div class="form-group">
-        {{ form_label(userForm.poster) }}
-        {{ form_widget(userForm.poster, { 'attr': {'class': 'form-control-file'} }) }}
-        {{ form_errors(userForm.poster) }}
-    </div>
-    <!-- Si l'utilisateur a déjà un fichier de poster,
-    il est affiché avec une classe CSS img-thumbnail.-->
-    {% if user.poster %}
-        <div class="form-group">
-            <img src="{{ asset('images/posters/' ~ user.poster) }}"
-                 alt="{{ user.firstName }} - {{ user.id }}"
-                 class="img-thumbnail">
+    <div class="container vh-100 d-flex justify-content-center align-items-center">
+        <div class="card p-4 w-100" style="max-width: 500px;">
+            <div class="user-details mt-3">
+                <h1 class="card-title text-center mb-4">Modifier Mon Profil</h1>
+                <!-- Si l'utilisateur a déjà un fichier de poster, il est affiché avec une classe CSS img-thumbnail. -->
+                {% if user.poster %}
+                    <div class="form-group text-center">
+                        <img src="{{ asset('images/posters/' ~ user.poster) }}"
+                             alt="{{ user.firstName }} - {{ user.id }}"
+                             class="rounded-circle img-thumbnail mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                    </div>
+                {% endif %}
+                {{ form_start(userForm) }}
+                <div class="form-group">
+                    {{ form_label(userForm.firstName) }}
+                    {{ form_widget(userForm.firstName, { 'attr': {'class': 'form-control'} }) }}
+                    {{ form_errors(userForm.firstName) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(userForm.lastName) }}
+                    {{ form_widget(userForm.lastName, { 'attr': {'class': 'form-control'} }) }}
+                    {{ form_errors(userForm.lastName) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(userForm.phone) }}
+                    {{ form_widget(userForm.phone, { 'attr': {'class': 'form-control'} }) }}
+                    {{ form_errors(userForm.phone) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(userForm.email) }}
+                    {{ form_widget(userForm.email, { 'attr': {'class': 'form-control'} }) }}
+                    {{ form_errors(userForm.email) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(userForm.campus) }}
+                    {{ form_widget(userForm.campus, { 'attr': {'class': 'form-control'} }) }}
+                    {{ form_errors(userForm.campus) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(userForm.poster) }}
+                    {{ form_widget(userForm.poster, { 'attr': {'class': 'form-control-file'} }) }}
+                    {{ form_errors(userForm.poster) }}
+                </div>
+                <button type="submit" class="btn btn-primary">Modifier mon profil</button>
+                {{ form_end(userForm) }}
+            </div>
         </div>
-    {% endif %}
-    <button type="submit" class="btn btn-primary">Modifier mon profil</button>
-    {{ form_end(userForm) }}
+    </div>
 {% endblock %}

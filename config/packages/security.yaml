@@ -34,6 +34,7 @@ security:
          - { path: ^/user/create, roles: ROLE_USER }
          - { path: ^/user/update, roles: ROLE_USER }
          - { path: '^/user/delete/\d+$', roles: ROLE_ADMIN }
+         - { path: '^/user/update/\d+$', roles: ROLE_ADMIN }
          - { path: '^/user/details/\d+$', roles: ROLE_USER }
          - { path: '^/user/registrationsList/\d+$', roles: ROLE_USER }
 

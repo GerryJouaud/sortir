@@ -90,48 +90,91 @@ class UserController extends AbstractController
         ]);
     }
 
+
     #[Route('/update/{id}', name: 'update')]
-    public function update(Request                $request,
+
+    public function update(Request $request,
+
                            EntityManagerInterface $entityManager,
-                           UserRepository         $userRepository,
-                           FileUploader           $fileUploader,
-                           int                    $id): Response
+
+                           UserRepository $userRepository,
+
+                           FileUploader $fileUploader,
+
+                           int $id): Response
+
     {
+
         $user = $userRepository->find($id);
+
+        // Vérifier si l'utilisateur existe
+
         if (!$user) {
-            throw $this->createNotFoundException("Cet utilisateur n'a pas été trouvé");
+
+            throw new NotFoundHttpException("Utilisateur non trouvé");
+
+        }
+
+        // Vérifier si l'utilisateur connecté peut accéder à cet utilisateur
+
+        if (!$this->isGranted('ROLE_ADMIN') && $user !== $this->getUser()) {
+
+            throw new AccessDeniedException('Vous n\'avez pas le droit d\'accéder à cet utilisateur.');
+
         }
 
         $userForm = $this->createForm(UserType::class, $user);
+
         $userForm->handleRequest($request);
 
         if ($userForm->isSubmitted() && $userForm->isValid()) {
+
             // Vérifier si un fichier a été téléchargé pour le champ 'poster'
+
             $file = $userForm->get('poster')->getData();
+
             if ($file) {
+
                 // Télécharge le fichier et récupère le nouveau nom de fichier
+
                 $newFilename = $fileUploader->upload(
+
                     $file,
+
                     $this->getParameter('sortir_poster_directory'),
+
                     $user->getFirstName()
+
                 );
+
                 // Mettez à jour le nom du poster dans l'entité User
+
                 $user->setPoster($newFilename);
+
             }
 
             $entityManager->persist($user);
+
             $entityManager->flush();
 
             $this->addFlash('success', 'Profil utilisateur mis à jour avec succès.');
 
             return $this->redirectToRoute('user_details', ['id' => $user->getId()]);
+
         }
 
+        // Si le formulaire n'est pas soumis ou n'est pas valide, affiche la page de modification
+
         return $this->render('user/edit.html.twig', [
+
             'userForm' => $userForm,
+
             'user' => $user,
+
         ]);
+
     }
+
 
     #[Route('/delete/{id}', name: 'delete')]
        // Restriction d'accès aux utilisateurs ayant le rôle ROLE_ADMIN
