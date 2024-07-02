@@ -157,10 +157,8 @@ class UserController extends AbstractController
     {
         // Récupère l'utilisateur par son ID
         $user = $userRepository->find($id);
-        // Vérifie si l'utilisateur connecté peut accéder à cet utilisateur
-        if (!$this->isGranted('ROLE_ADMIN') && $user !== $this->getUser()) {
-            throw new AccessDeniedException('Vous n\'avez pas le droit d\'accéder à cet utilisateur.');
-        }
+
+
 
         // Si l'utilisateur n'est pas trouvé, lève une exception
         if (!$user) {
