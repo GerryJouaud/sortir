@@ -205,7 +205,7 @@ class UserController extends AbstractController
 
         // Si l'utilisateur n'est pas trouvé, lève une exception
         if (!$user) {
-            throw $this->createNotFoundException("Cet utilisateur n'a pas été trouvé");
+            throw $this->createNotFoundException("Cet utilisateur n'a pas été trouvé !");
         }
 
         return $this->render('user/userDetails.html.twig', [
@@ -219,14 +219,17 @@ class UserController extends AbstractController
     {
         $user = $userRepository->find($id);
         if (!$user) {
-            throw $this->createNotFoundException("Cet utilisateur n'a pas été trouvé");
+            $this->addFlash('danger', "L'utilisateur n'a pas été trouvé ! ");
+            return $this->redirectToRoute('event_list');
         }
         $userRegistrationsList = $user->getEvents();
         if (!$userRegistrationsList) {
-            throw $this->createNotFoundException("La liste de sorties n'a pas été trouvée !");
+            $this->addFlash('danger', "La liste des sorties n'a pas été trouvée ! ");
+            return $this->redirectToRoute('event_list');
         }
         if ($userRegistrationsList->isEmpty()) {
-            throw $this->createNotFoundException("Aucune inscription !");
+            $this->addFlash('danger', "Vous n'êtes inscrit à aucune sortie ! ");
+            return $this->redirectToRoute('event_list');
         }
 
         return $this->render('user/userRegistrationsList.html.twig', [

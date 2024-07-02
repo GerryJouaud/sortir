@@ -52,6 +52,11 @@ class EventRepository extends ServiceEntityRepository
             $qb->andWhere('e.startDate < :now')
                 ->setParameter('now', new \DateTime());
         }
+        if ($filters['notArchived']) {
+            $qb->andWhere('e.startDate > :now')
+                ->setParameter('now', new \DateTime());
+        }
+
 
         return $qb->getQuery()->getResult();
     }

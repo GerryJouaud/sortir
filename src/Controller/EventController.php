@@ -42,14 +42,22 @@ class EventController extends AbstractController
             'inscrit' => $request->query->get('inscrit'),
             'non_inscrit' => $request->query->get('non_inscrit'),
             'passees' => $request->query->get('passees'),
+            'notArchived' => $request->query->get('notArchived'),
+
         ];
         $events = $eventRepository->findByFilters($filters, $this->getUser());
+//        $eventsArchived = $eventRepository->findByFilters($filters["notArchived"], $this->getUser());
+
 
         //Récupération d'un event par son id
         return $this->render('main/index.html.twig', [
             'events' => $events,
              'allCampus' => $allCampus,
             'filters' => $filters,
+//            "eventsArchived"=>$eventsArchived
+
+
+
         ]);
     }
 
@@ -141,10 +149,12 @@ public function create(
     {
         $event = $eventRepository->find($id);
         if(!$event){
-            throw $this->createNotFoundException("Cette sortie n'a pas été trouvée");
+            $this->addFlash('danger', "Sortie non trouvée !");
+            return $this->redirectToRoute('event_list');
         }
         if($event->getOrganizer() !== $this->getUser()){
-            throw $this->createNotFoundException("Vous n'êtes pas l'organisateur, vous ne pouvez pas supprimer cette sortie");
+            $this->addFlash('danger', "Vous n'êtes pas l'organisateur, vous ne pouvez pas supprimer cette sortie !");
+            return $this->redirectToRoute('event_list');
         }
         $entityManager->remove($event);
         $entityManager->flush();
@@ -167,7 +177,7 @@ public function create(
 
         $user = $this->getUser();
         if (!$user) {
-            $this->addFlash('danger', "Vous devez être connecté pour rejoindre une sortie.");
+            $this->addFlash('danger', "Vous devez être connecté pour rejoindre une sortie !");
             return $this->redirectToRoute('user_login'); // Redirige vers la page de connexion
         }
 
@@ -175,28 +185,28 @@ public function create(
         $user = $userRepository->find($this->getUser()->getId()); // Utilisateur connecté
         $event = $eventRepository->find($id);
         if(!$event){
-            $this->addFlash('danger',"Cette sortie n'a pas été trouvée");
+            $this->addFlash('danger',"Cette sortie n'a pas été trouvée !");
             return $this->redirectToRoute('event_list');
         }
         if($event->getOrganizer() == $this->getUser()){
-            $this->addFlash('danger',"Vous êtes l'organisateur, vous participez déjà à cette sortie");
+            $this->addFlash('danger',"Vous êtes l'organisateur, vous participez déjà à cette sortie !");
             return $this->redirectToRoute('event_list');
         }
         if($event->getParticipants()->contains($user)){
-            $this->addFlash('danger',"Vous êtes déjà inscrit à cette sortie");
+            $this->addFlash('danger',"Vous êtes déjà inscrit à cette sortie !");
             return $this->redirectToRoute('event_list');
         }
 
         if($event->getParticipants()->count() == $event->getMaxParticipants()){
-            $this->addFlash('danger',"Cette sortie est complète");
+            $this->addFlash('danger',"Cette sortie est complète !");
             return $this->redirectToRoute('event_list');
         }
         if($event->getDateLine() < new \DateTime('now')){
-            $this->addFlash('danger',"Cette sortie est déjà terminée");
+            $this->addFlash('danger',"Cette sortie est déjà terminée !");
             return $this->redirectToRoute('event_list');
         }
         if($event->getStateEvent() !== $stateEventOpen){
-            $this->addFlash('danger', "Les inscriptions pour cette sortie ne sont pas ouvertes");
+            $this->addFlash('danger', "Les inscriptions pour cette sortie ne sont pas ouvertes !");
             return $this->redirectToRoute('event_list');
         }
 
@@ -205,7 +215,7 @@ public function create(
             $entityManager->persist($event);
             $entityManager->flush();
 
-            $this->addFlash('success', "Vous êtes bien inscrit à la sortie");
+            $this->addFlash('success', "Vous êtes bien inscrit à la sortie !");
 
             return $this->redirectToRoute('event_list');
        }
@@ -223,13 +233,16 @@ public function create(
         $user = $userRepository->find($this->getUser()->getId());
         $event = $eventRepository->find($id);
         if (!$event) {
-            $this->addFlash('error', "Cette sortie n'a pas été trouvée");
+            $this->addFlash('error', "Cette sortie n'a pas été trouvée !");
         }
         if (!$event->getParticipants()->contains($user)) {
-            $this->addFlash('error', "Vous n'êtes pas inscrit à cette sortie");
+            $this->addFlash('error', "Vous n'êtes pas inscrit à cette sortie !");
         }
-        if (!$event->getStartDate() > new \DateTime('now') ) {
-            $this->addFlash('error', "La sortie a débutée, vous ne pouvez vous désinscrire");
+        if ($event->getStartDate() > new \DateTime('now') ) {
+            $this->addFlash('error', "La sortie a débutée, vous ne pouvez vous désinscrire !");
+        }
+        if ($event->getOrganizer() == $this->getUser()) {
+            $this->addFlash('error', "Vous organisez cette sortie, vous ne pouvez pas vous désinscire !");
         }
 
         $event->removeParticipant($user);

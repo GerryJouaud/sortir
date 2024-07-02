@@ -6,10 +6,9 @@
 
     <h1>Liste de mes inscriptions:</h1>
 
-
-
-
-
+    {% if userRegistrationsList.empty %}
+        <h1>Vous n'êtes inscrit à aucune sortie !</h1>
+    {% endif %}
     {% for eventRegistered in userRegistrationsList %}
 
 

@@ -20,27 +20,27 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('user_registrationsList',{"id": app.user.id}) }}">Mes Inscriptions</a>
+                        <a class="nav-link active" href="{{ path('user_registrationsList',{"id": app.user.id}) }}">Mes Inscriptions</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('user_details',{"id": app.user.id}) }}">Mon Profil</a>
+                        <a class="nav-link active" href="{{ path('user_details',{"id": app.user.id}) }}">Mon Profil</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('user_logout') }}">Se Déconnecter ({{ app.user.firstName }}) </a>
+                        <a class="nav-link active" href="{{ path('user_logout') }}">Se Déconnecter ({{ app.user.firstName }}) </a>
                     </li>
 
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('user_login') }}">Se Connecter </a>
+                        <a class="nav-link active" href="{{ path('user_login') }}">Se Connecter </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_registrationapp_register') }}">Je M'inscris</a>
+                        <a class="nav-link active" href="{{ path('app_registrationapp_register') }}">Je M'inscris</a>
                     </li>
                 {% endif %}
 
-                <li class="nav-item" >
-                <p class="nav-link  "> Date du jour : {{ "now"|date("d/m/Y") }} </p>
-                </li>
+{#                <li class="nav-item" >#}
+{#                <p class="nav-link  "> Date du jour : {{ "now"|date("d/m/Y") }} </p>#}
+{#                </li>#}
 
             </ul>
 {#            <form class="d-flex" role="search">#}
