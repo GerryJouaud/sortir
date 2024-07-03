@@ -19,50 +19,50 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/event', name: 'event_')]
 class EventController extends AbstractController
 {
+    #[Route('/', name: 'list')]
+    public function list(
+        EntityManagerInterface $entityManager,
+        EventRepository $eventRepository,
+        PlaceRepository $placeRepository,
+        StateEventRepository $stateEventRepository,
+        Request $request,
+        CampusRepository $campusRepository
+
+    ): Response
+    {
+
+
+        $allCampus=$campusRepository->findAll();
+
+        $filters = [
+            'campus' => $request->query->get('campus'),
+            'search' => $request->query->get('search'),
+            'startDate' => $request->query->get('start_date'),
+            'dateLine' => $request->query->get('dateLine'),
+            'organisateur' => $request->query->get('organisateur'),
+            'inscrit' => $request->query->get('inscrit'),
+            'non_inscrit' => $request->query->get('non_inscrit'),
+            'passees' => $request->query->get('passees'),
+        ];
+        if ($filters['startDate']) {
+            $filters['startDate'] = \DateTime::createFromFormat('Y-m-d H:i:s', $filters['startDate'] . ' 00:00:00');
+        }
+        if ($filters['dateLine']) {
+            $filters['dateLine'] = \DateTime::createFromFormat('Y-m-d H:i:s', $filters['dateLine'] . ' 00:00:00');
+        }
+
+        $events = $eventRepository->findByFilters($filters, $this->getUser());
 
 
 
-//    #[Route('/', name: 'list')]
-//    public function list(
-//        EntityManagerInterface $entityManager,
-//        EventRepository $eventRepository,
-//        PlaceRepository $placeRepository,
-//        StateEventRepository $stateEventRepository,
-//        Request $request,
-//        CampusRepository $campusRepository
-//
-//    ): Response
-//    {
-//
-//        $allCampus = $campusRepository->findAll();
-//
-//        $filters = [
-//            'campus' => $request->query->get('campus'),
-//            'search' => $request->query->get('search'),
-//            'startDate' => $request->query->get('start_date'),
-//            'dateLine' => $request->query->get('date_line'),
-//            'organisateur' => $request->query->get('organisateur'),
-//            'inscrit' => $request->query->get('inscrit'),
-//            'non_inscrit' => $request->query->get('non_inscrit'),
-//            'passees' => $request->query->get('passees'),
-//        ];
-//
-//        // Convertir les dates en objets DateTime si elles sont définies
-//        if ($filters['startDate']) {
-//            $filters['startDate'] = \DateTime::createFromFormat('Y-m-d H:i:s', $filters['startDate'] . ' 00:00:00');
-//        }
-//        if ($filters['dateLine']) {
-//            $filters['dateLine'] = \DateTime::createFromFormat('Y-m-d H:i:s', $filters['dateLine'] . ' 00:00:00');
-//        }
-//
-//        $events = $eventRepository->findByFilters($filters, $this->getUser());
-//
-//        return $this->render('main/index.html.twig', [
-//            'events' => $events,
-//            'allCampus' => $allCampus,
-//            'filters' => $filters,
-//        ]);
-//    }
+        //Récupération d'un event par son id
+        return $this->render('main/index.html.twig', [
+            'events' => $events,
+            'allCampus' => $allCampus,
+            'filters' => $filters,
+        ]);
+    }
+
 
     #[Route('/details/{id}', name: 'details', requirements: ['id' => '\d+'])]
  public function detail(EventRepository $eventRepository, UserRepository $userRepository, int $id):Response{
@@ -114,7 +114,7 @@ public function create(
             $entityManager->flush();
 
             $this->addFlash('success', "Sortie ajoutée !");
-            return $this->redirectToRoute('event_list');
+            return $this->redirectToRoute('home');
         }
 
         return $this->render('event/addEvent.html.twig', [
@@ -145,7 +145,7 @@ public function create(
             $entityManager->flush();
 
             $this->addFlash('success', "Modifications ajoutées");
-            return $this->redirectToRoute('event_list');
+            return $this->redirectToRoute('home');
         }
         return $this->render('event/updateEvent.html.twig', [
             'eventForm' => $eventForm
@@ -163,17 +163,17 @@ public function create(
         $event = $eventRepository->find($id);
         if(!$event){
             $this->addFlash('danger', "Sortie non trouvée !");
-            return $this->redirectToRoute('event_list');
+            return $this->redirectToRoute('home');
         }
         if($event->getOrganizer() !== $this->getUser()){
             $this->addFlash('danger', "Vous n'êtes pas l'organisateur, vous ne pouvez pas supprimer cette sortie !");
-            return $this->redirectToRoute('event_list');
+            return $this->redirectToRoute('home');
         }
         $entityManager->remove($event);
         $entityManager->flush();
 
         $this->addFlash( 'success' ,'Sortie supprimée !!');
-        return $this->redirectToRoute('event_list');
+        return $this->redirectToRoute('home');
     }
     #[Route('/join/{id}', name: 'join')]
     public function join(
@@ -199,28 +199,28 @@ public function create(
         $event = $eventRepository->find($id);
         if(!$event){
             $this->addFlash('danger',"Cette sortie n'a pas été trouvée !");
-            return $this->redirectToRoute('event_list');
+            return $this->redirectToRoute('home');
         }
         if($event->getOrganizer() == $this->getUser()){
             $this->addFlash('danger',"Vous êtes l'organisateur, vous participez déjà à cette sortie !");
-            return $this->redirectToRoute('event_list');
+            return $this->redirectToRoute('home');
         }
         if($event->getParticipants()->contains($user)){
             $this->addFlash('danger',"Vous êtes déjà inscrit à cette sortie !");
-            return $this->redirectToRoute('event_list');
+            return $this->redirectToRoute('home');
         }
 
         if($event->getParticipants()->count() == $event->getMaxParticipants()){
             $this->addFlash('danger',"Cette sortie est complète !");
-            return $this->redirectToRoute('event_list');
+            return $this->redirectToRoute('home');
         }
         if($event->getDateLine() < new \DateTime('now')){
             $this->addFlash('danger',"Cette sortie est déjà terminée !");
-            return $this->redirectToRoute('event_list');
+            return $this->redirectToRoute('home');
         }
         if($event->getStateEvent() !== $stateEventOpen){
             $this->addFlash('danger', "Les inscriptions pour cette sortie ne sont pas ouvertes !");
-            return $this->redirectToRoute('event_list');
+            return $this->redirectToRoute('home');
         }
 
         $event->addParticipant($user);
@@ -230,7 +230,7 @@ public function create(
 
             $this->addFlash('success', "Vous êtes bien inscrit à la sortie !");
 
-            return $this->redirectToRoute('event_list');
+            return $this->redirectToRoute('home');
        }
 
 
@@ -262,7 +262,7 @@ public function create(
         $entityManager->persist($event);
         $entityManager->flush();
         $this->addFlash('success', "Vous êtes bien désinscrit de cette sortie");
-        return $this->redirectToRoute('event_list');
+        return $this->redirectToRoute('home');
     }
 
 }
