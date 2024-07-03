@@ -42,7 +42,7 @@ class EventController extends AbstractController
             'inscrit' => $request->query->get('inscrit'),
             'non_inscrit' => $request->query->get('non_inscrit'),
             'passees' => $request->query->get('passees'),
-            'notArchived' => $request->query->get('notArchived'),
+//            'notArchived' => $request->query->get('notArchived'),
 
         ];
         $events = $eventRepository->findByFilters($filters, $this->getUser());
@@ -64,12 +64,17 @@ class EventController extends AbstractController
     #[Route('/details/{id}', name: 'details', requirements: ['id' => '\d+'])]
  public function detail(EventRepository $eventRepository, UserRepository $userRepository, int $id):Response{
 
-        $user = $userRepository->find($this->getUser()->getId());
+        $user = $this->getUser();
+        if (!$user) {
+            $this->addFlash('danger', "Vous devez être connecté pour afficher une sortie !");
+            return $this->redirectToRoute('user_login'); // Redirige vers la page de connexion
+        }
         $event = $eventRepository->find($id);
         if(!$event){
             //Lance une erreur 404
             throw $this->createNotFoundException('event not found');
         }
+
         return $this->render('event/EventDetails.html.twig', [
             'event' => $event,
             'user' => $user,
@@ -86,9 +91,14 @@ public function create(
 
     ):Response
     {
+
         $statesEvent = $stateEventRepository->findAll();
         $stateEventCreated=$statesEvent[0]; // Sortie Etat "Created"
-        $user = $userRepository->find($this->getUser()->getId());
+        $user = $this->getUser();
+        if (!$user) {
+            $this->addFlash('danger', "Vous devez être connecté pour créer une sortie !");
+            return $this->redirectToRoute('user_login'); // Redirige vers la page de connexion
+        }
         $event = new Event();
         $eventForm = $this->createForm(EventType::class, $event);
         $eventForm->handleRequest($request);
