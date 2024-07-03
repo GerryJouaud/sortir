@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class MainController extends AbstractController
 {
-    #[Route('/', name: 'list')]
+    #[Route('/', name: 'home')]
     public function list(
         EntityManagerInterface $entityManager,
         EventRepository $eventRepository,
@@ -26,25 +26,34 @@ class MainController extends AbstractController
     ): Response
     {
 
-        $allCampus=$campusRepository->findAll();
+        $allCampus = $campusRepository->findAll();
 
         $filters = [
             'campus' => $request->query->get('campus'),
             'search' => $request->query->get('search'),
             'startDate' => $request->query->get('start_date'),
-            'dateLine' => $request->query->get('dateLine'),
+            'dateLine' => $request->query->get('date_line'),
             'organisateur' => $request->query->get('organisateur'),
             'inscrit' => $request->query->get('inscrit'),
             'non_inscrit' => $request->query->get('non_inscrit'),
             'passees' => $request->query->get('passees'),
         ];
+
+
+        if ($filters['startDate']) {
+            $filters['startDate'] = \DateTime::createFromFormat('Y-m-d H:i:s', $filters['startDate'] . ' 00:00:00');
+        }
+        if ($filters['dateLine']) {
+            $filters['dateLine'] = \DateTime::createFromFormat('Y-m-d H:i:s', $filters['dateLine'] . ' 00:00:00');
+        }
+
         $events = $eventRepository->findByFilters($filters, $this->getUser());
 
-        //Récupération d'un event par son id
         return $this->render('main/index.html.twig', [
             'events' => $events,
             'allCampus' => $allCampus,
             'filters' => $filters,
         ]);
     }
+
 }
