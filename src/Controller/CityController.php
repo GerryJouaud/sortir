@@ -52,7 +52,7 @@ class CityController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Ville ajoutée!');
-            return $this->redirectToRoute('city_list');
+            return $this->redirectToRoute('place_create');
         }
 
         return $this->render('city/addCity.html.twig', [

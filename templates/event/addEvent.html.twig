@@ -11,6 +11,17 @@
 
                 <div class="row">
                     <div class="col-md-6">
+
+                        <div class="d-flex form-group col-md-12">
+                            <div class="flex-shrink-0">
+                                {{ form_label(eventForm.place) }}
+                                {{ form_widget(eventForm.place, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                            <div class="flex-grow-1 ms-4">
+                                <a href="{{ path('place_create') }}">Ajouter un lieu</a>
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             {{ form_label(eventForm.name) }}
                             {{ form_widget(eventForm.name, {'attr': {'class': 'form-control'}}) }}
@@ -54,40 +65,6 @@
                             {{ form_widget(eventForm.campus, {'attr': {'class': 'form-control'}}) }}
                         </div>
 
-                        <div class="form-group">
-                            <label for="city">Ville</label>
-                            <input type="text" id="city" name="city" class="form-control">
-                        </div>
-
-                        <div class="d-flex form-group col-md-12">
-                            <div class="flex-shrink-0">
-                                {{ form_label(eventForm.place) }}
-                                {{ form_widget(eventForm.place, {'attr': {'class': 'form-control'}}) }}
-                            </div>
-                            <div class="flex-grow-1 ms-4">
-                                <a href="{{ path('place_create') }}">line</a>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="street">Rue</label>
-                            <input type="text" id="street" name="street" class="form-control">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="postalCode">Code postal</label>
-                            <input type="text" id="postalCode" name="postalCode" class="form-control">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="latitude">Latitude</label>
-                            <input type="text" id="latitude" name="latitude" class="form-control">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="longitude">Longitude</label>
-                            <input type="text" id="longitude" name="longitude" class="form-control">
-                        </div>
                     </div>
                 </div>
 

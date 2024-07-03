@@ -10,6 +10,15 @@
             </div>
             <div class="card-body">
                 {{ form_start(placeForm) }}
+            <div class="row">
+                <div class="col-6">
+                    {{ form_label(placeForm.City) }}
+                    {{ form_widget(placeForm.City, {'attr': {'class': 'form-control'}}) }}
+                </div>
+                <div class="col-6">
+                    <a href="{{ path('city_create') }}">Ajouter une ville</a>
+                </div>
+            </div>
 
                 <div class="mb-3">
                     {{ form_label(placeForm.name) }}
@@ -31,16 +40,13 @@
                     {{ form_widget(placeForm.longitude, {'attr': {'class': 'form-control'}}) }}
                 </div>
 
-                <div class="mb-3">
-                    {{ form_label(placeForm.City) }}
-                    {{ form_widget(placeForm.City, {'attr': {'class': 'form-control'}}) }}
+
+                <div class="row">
+
+
+                    <button type="submit" class="btn btn-primary mx-auto col-3">Ajouter le lieu</button>
+
                 </div>
-
-                <div class="form-actions mt-4">
-
-                    <a href="{{ path('event_create') }}" class="btn btn-primary mb-2 col-2 mx-auto "> Ajouter le lieu</a>
-                </div>
-
                 {{ form_end(placeForm) }}
             </div>
         </div>
