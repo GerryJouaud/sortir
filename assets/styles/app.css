@@ -140,3 +140,7 @@ body {
     background-attachment: fixed;
     background-position: center center;
 }
+#plusbutton{
+    font-size: xxx-large;
+    border-radius: 50%;
+}

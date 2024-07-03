@@ -1,14 +1,111 @@
 {% extends 'base.html.twig' %}
 
-
-{% block title %}Ajouter une sortie{% endblock %}
-
+{% block title %}Créer une sortie{% endblock %}
 
 {% block body %}
+    <div class="container vh-70 d-flex justify-content-center align-items-center pt-3 pb-3">
+        <div class="card p-4 w-100" style="max-width: 800px;">
+            <div class="event-addEvent mt-3">
+                <h1 class="card-title text-center mb-4">Créer une sortie</h1>
+                {{ form_start(eventForm) }}
 
-    <div class="container bg-light rounded mx-3 my-3">
-    {{ form_start(eventForm)}}
-    {{ form_end(eventForm) }}
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {{ form_label(eventForm.name) }}
+                            {{ form_widget(eventForm.name, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(eventForm.startDate) }}
+                            {{ form_widget(eventForm.startDate, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(eventForm.dateLine) }}
+                            {{ form_widget(eventForm.dateLine, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(eventForm.maxParticipants) }}
+                            {{ form_widget(eventForm.maxParticipants, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="form-group form-inline">
+                            {{ form_label(eventForm.duration) }}
+                            {{ form_widget(eventForm.duration, {'attr': {'class': 'form-control'}}) }}
+                            <label class="ml-2">minutes</label>
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(eventForm.stateEvent) }}
+                            {{ form_widget(eventForm.stateEvent, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(eventForm.description) }}
+                            {{ form_widget(eventForm.description, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {{ form_label(eventForm.campus) }}
+                            {{ form_widget(eventForm.campus, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city">Ville</label>
+                            <input type="text" id="city" name="city" class="form-control">
+                        </div>
+
+                        <div class="d-flex form-group col-md-12">
+                            <div class="flex-shrink-0">
+                                {{ form_label(eventForm.place) }}
+                                {{ form_widget(eventForm.place, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                            <div class="flex-grow-1 ms-4">
+                                <a href="{{ path('place_create') }}">line</a>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="street">Rue</label>
+                            <input type="text" id="street" name="street" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="postalCode">Code postal</label>
+                            <input type="text" id="postalCode" name="postalCode" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="latitude">Latitude</label>
+                            <input type="text" id="latitude" name="latitude" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="longitude">Longitude</label>
+                            <input type="text" id="longitude" name="longitude" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions mt-4 d-flex justify-content-evenly">
+                    <button type="submit" class="btn btn-primary px-4">Enregistrer</button>
+                    {#                    <button type="submit" class="btn btn-secondary px-4" formnovalidate>Publier</button>#}
+                    <button type="reset" class="btn btn-danger px-4">Annuler</button>
+                </div>
+
+                {{ form_end(eventForm) }}
+            </div>
+        </div>
     </div>
-
 {% endblock %}
+
+{##plusbutton{#}
+{#font-size: xx-large ;#}
+{#border-radius: 50%;#}
+{#margin-left:100px;#}
+
+{#}#}

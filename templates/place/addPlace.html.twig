@@ -3,11 +3,46 @@
 {% block title %}Ajouter un lieu{% endblock %}
 
 {% block body %}
-    <h1>Ajout d'un lieu:</h1>
+    <div class="container mt-4 mb-5 col-5 ">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="text-center ">Ajout d'un lieu </h1>
+            </div>
+            <div class="card-body">
+                {{ form_start(placeForm) }}
 
-    {{ form_start(placeForm) }}
-    <button>Ajouter le lieu</button>
-    {{ form_end(placeForm) }}
+                <div class="mb-3">
+                    {{ form_label(placeForm.name) }}
+                    {{ form_widget(placeForm.name, {'attr': {'class': 'form-control'}}) }}
+                </div>
 
+                <div class="mb-3">
+                    {{ form_label(placeForm.street) }}
+                    {{ form_widget(placeForm.street, {'attr': {'class': 'form-control'}}) }}
+                </div>
 
+                <div class="mb-3">
+                    {{ form_label(placeForm.latitude) }}
+                    {{ form_widget(placeForm.latitude, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(placeForm.longitude) }}
+                    {{ form_widget(placeForm.longitude, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(placeForm.City) }}
+                    {{ form_widget(placeForm.City, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <div class="form-actions mt-4">
+
+                    <a href="{{ path('event_create') }}" class="btn btn-primary mb-2 col-2 mx-auto "> Ajouter le lieu</a>
+                </div>
+
+                {{ form_end(placeForm) }}
+            </div>
+        </div>
+    </div>
 {% endblock %}
