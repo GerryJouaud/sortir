@@ -55,10 +55,12 @@ class EventType extends AbstractType
 
             ->add('place', EntityType::class, [
                 'class' => Place::class,
+                'label' => 'Lieu : ',
                 'choice_label' => 'name',
             ])
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
+                'label' => 'Campus organisateur : ',
                 'choice_label' => 'name',
             ])
         ;

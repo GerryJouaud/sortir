@@ -3,11 +3,34 @@
 {% block title %}Ajouter une ville{% endblock %}
 
 {% block body %}
-    <h1>Ajout d'une ville:</h1>
 
-{{ form_start(cityForm) }}
-    <button>Ajouter la ville</button>
-    {{ form_end(cityForm) }}
 
+    <div class="container mt-4 mb-5 col-5 ">
+        <div class="card">
+            <div class="card-header">
+
+                    <h1 class="text-center ">Ajout d'une ville </h1>
+            </div>
+                    <div class="card-body">
+                        {{ form_start(cityForm) }}
+                        <div class="row">
+                            <div class="col-6">
+                            {{ form_label(cityForm.name) }}
+                            {{ form_widget(cityForm.name, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                            <div class="col-6">
+                            {{ form_label(cityForm.zipCode) }}
+                            {{ form_widget(cityForm.zipCode, {'attr': {'class': 'form-control'}}) }}
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <button type="submit" class="btn btn-primary mt-3 mx-auto col-3">Ajouter la ville</button>
+                        </div>
+                        {{ form_end(cityForm) }}
+                </div>
+
+        </div>
+    </div>
 
 {% endblock %}
