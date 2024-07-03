@@ -26,10 +26,6 @@ class MainController extends AbstractController
     ): Response
     {
 
-
-
-
-
         //Récupération d'un event par son id
         return $this->redirectToRoute("event_list");
     }

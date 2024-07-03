@@ -16,7 +16,6 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
-
     public function findByFilters(array $filters, $user)
     {
         $qb = $this->createQueryBuilder('e');
@@ -54,13 +53,9 @@ class EventRepository extends ServiceEntityRepository
                 ->setParameter('now', new \DateTime());
         }
 
-        //if ($filters['notArchived']) {
-//            $qb->andWhere('e.startDate > :now')
-//                ->setParameter('now', new \DateTime());
-//        }
-
         return $qb->getQuery()->getResult();
     }
+
 
 //    /**
 //     * @return Event[] Returns an array of Event objects
