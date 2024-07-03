@@ -16,51 +16,51 @@ class EventRepository extends ServiceEntityRepository
         parent::__construct($registry, Event::class);
     }
 
+
     public function findByFilters(array $filters, $user)
     {
         $qb = $this->createQueryBuilder('e');
 
-        if ($filters['campus']) {
+        if (!empty($filters['campus'])) {
             $qb->andWhere('e.campus = :campus')
                 ->setParameter('campus', $filters['campus']);
         }
-        if ($filters['search']) {
+        if (!empty($filters['search'])) {
             $qb->andWhere('e.name LIKE :search')
                 ->setParameter('search', '%' . $filters['search'] . '%');
         }
-        if ($filters['startDate']) {
+        if (!empty($filters['startDate'])) {
             $qb->andWhere('e.startDate >= :startDate')
                 ->setParameter('startDate', $filters['startDate']);
         }
-        if ($filters['dateLine']) {
-            $qb->andWhere('e.dateLine <= :dateLine')
+        if (!empty($filters['dateLine'])) {
+            $qb->andWhere('e.startDate <= :dateLine')
                 ->setParameter('dateLine', $filters['dateLine']);
         }
-        if ($filters['organisateur']) {
+        if (!empty($filters['organisateur'])) {
             $qb->andWhere('e.organizer = :organizer')
                 ->setParameter('organizer', $user);
         }
-        if ($filters['inscrit']) {
+        if (!empty($filters['inscrit'])) {
             $qb->andWhere(':user MEMBER OF e.participants')
                 ->setParameter('user', $user);
         }
-        if ($filters['non_inscrit']) {
+        if (!empty($filters['non_inscrit'])) {
             $qb->andWhere(':user NOT MEMBER OF e.participants')
                 ->setParameter('user', $user);
         }
-        if ($filters['passees']) {
+        if (!empty($filters['passees'])) {
             $qb->andWhere('e.startDate < :now')
                 ->setParameter('now', new \DateTime());
         }
-//        if ($filters['notArchived']) {
+
+        //if ($filters['notArchived']) {
 //            $qb->andWhere('e.startDate > :now')
 //                ->setParameter('now', new \DateTime());
 //        }
 
-
         return $qb->getQuery()->getResult();
     }
-
 
 //    /**
 //     * @return Event[] Returns an array of Event objects
@@ -86,4 +86,5 @@ class EventRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
 }

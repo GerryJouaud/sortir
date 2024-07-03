@@ -5,63 +5,57 @@
 {% block title %}Accueil{% endblock %}
 
 {% block body %}
-    <div class="container my-5 p-4  bg-light rounded col-8 ">
-        <h2 class="text-center" >Rechercher un sortie</h2>
+    <div class="container my-5 p-4 bg-light rounded col-8">
+        <h2 class="text-center">Rechercher un sortie</h2>
 
-
-        <form method="get" action="{{ path('event_list') }}" class="row g-3 mt-3  ">
-                <div class="row gx-2 my-3   ">
-                    <div class=" col-3">
-                        <label for="campus" class="">Campus :</label>
-                        <select id="campus" name="campus" class="form-control">
-                            <option value="">Sélectionner un campus</option>
-                            {% for campus in allCampus %}
-                                <option value="{{ campus.id }}" {% if campus.id == filters.campus %}selected{% endif %}>{{ campus.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class=" col-3 ">
-                        <label for="search" class="">Rechercher:</label>
-                        <input type="text" id="search" name="search" class="form-control" value="{{ filters.search }}">
-                    </div>
-
-                    <div class=" col-3">
-                        <label for="start_date" class="">Du :</label>
-                        <input type="date" id="start_date" name="start_date" class="form-control" value="{{ filters.startDate }}">
-                    </div>
-
-                    <div class=" col-3 ">
-                        <label for="date_line" class="">Au :</label>
-                        <input type="date" id="date_line" name="date_line" class="form-control" value="{{ filters.dateLine }}">
-                    </div>
-
-
-                </div>
-                <div class="row gx-2 ">
-                    <div class="col-3">
-                        <input type="checkbox" class="form-check-input" id="organisateur" name="organisateur" {% if filters.organisateur %}checked{% endif %}>
-                        <label class="form-check-label" for="organisateur">J'organise</label>
-                    </div>
-                    <div class="col-3">
-                        <input type="checkbox" class="form-check-input" id="inscrit" name="inscrit" {% if filters.inscrit %}checked{% endif %}>
-                        <label class="form-check-label" for="inscrit">Je suis inscrit·e</label>
-                    </div>
-                    <div class="col-3">
-                        <input type="checkbox" class="form-check-input" id="non_inscrit" name="non_inscrit" {% if filters.non_inscrit %}checked{% endif %}>
-                        <label class="form-check-label" for="non_inscrit">Je ne suis pas inscrit·e</label>
-                    </div>
-                    <div class="col-3">
-                        <input type="checkbox" class="form-check-input" id="passees" name="passees" {% if filters.passees %}checked{% endif %}>
-                        <label class="form-check-label" for="passees">Sorties archivées</label>
-                    </div>
-
+        <form method="get" action="{{ path('event_list') }}" class="row g-3 mt-3">
+            <div class="row gx-2 my-3">
+                <div class="col-3">
+                    <label for="campus">Campus :</label>
+                    <select id="campus" name="campus" class="form-control">
+                        <option value="">Sélectionner un campus</option>
+                        {% for campus in allCampus %}
+                            <option value="{{ campus.id }}" {% if campus.id == filters.campus %}selected{% endif %}>{{ campus.name }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
 
-            <button type="submit" class="btn btn-primary mb-2 col-2 mx-auto ">Rechercher</button>
+                <div class="col-3">
+                    <label for="search">Rechercher:</label>
+                    <input type="text" id="search" name="search" class="form-control" value="{{ filters.search }}">
+                </div>
 
+                <div class="col-3">
+                    <label for="start_date">Du :</label>
+                    <input type="date" id="start_date" name="start_date" class="form-control" value="{{ filters.startDate|date('Y-m-d') }}">
+                </div>
+
+                <div class="col-3">
+                    <label for="date_line">Au :</label>
+                    <input type="date" id="date_line" name="date_line" class="form-control" value="{{ filters.dateLine|date('Y-m-d') }}">
+                </div>
+            </div>
+            <div class="row gx-2">
+                <div class="col-3">
+                    <input type="checkbox" class="form-check-input" id="organisateur" name="organisateur" {% if filters.organisateur %}checked{% endif %}>
+                    <label class="form-check-label" for="organisateur">J'organise</label>
+                </div>
+                <div class="col-3">
+                    <input type="checkbox" class="form-check-input" id="inscrit" name="inscrit" {% if filters.inscrit %}checked{% endif %}>
+                    <label class="form-check-label" for="inscrit">Je suis inscrit·e</label>
+                </div>
+                <div class="col-3">
+                    <input type="checkbox" class="form-check-input" id="non_inscrit" name="non_inscrit" {% if filters.non_inscrit %}checked{% endif %}>
+                    <label class="form-check-label" for="non_inscrit">Je ne suis pas inscrit·e</label>
+                </div>
+                <div class="col-3">
+                    <input type="checkbox" class="form-check-input" id="passees" name="passees" {% if filters.passees %}checked{% endif %}>
+                    <label class="form-check-label" for="passees">Sorties archivées</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary mb-2 col-2 mx-auto">Rechercher</button>
         </form>
-
     </div>
 
     <div class="container p-4 mb-5 rounded bg-light">
@@ -69,48 +63,46 @@
 
         <table class="table table-striped mt-5">
             <thead>
-                <tr>
-                    <th>Nom de la sortie</th>
-                    <th>Date de la sortie</th>
-                    <th>Clôture</th>
-                    <th>Inscrits/Places</th>
-                    <th>État</th>
-                    <th>Inscrit</th>
-                    <th>Organisateur</th>
-                    <th>Actions</th>
-                </tr>
+            <tr>
+                <th>Nom de la sortie</th>
+                <th>Date de la sortie</th>
+                <th>Clôture</th>
+                <th>Inscrits/Places</th>
+                <th>État</th>
+                <th>Inscrit</th>
+                <th>Organisateur</th>
+                <th>Actions</th>
+            </tr>
             </thead>
-                <tbody>
+            <tbody>
             {% for event in events %}
-                    <tr>
-                        <td>{{ event.name }}</td>
-                        <td>{{ event.startDate|date('d/m/Y H:i') }}</td>
-                        <td>{{ event.dateLine|date('d/m/Y') }}</td>
-                        <td>{{ event.participants|length }}/{{ event.maxParticipants }}</td>
-                        <td>{{ event.stateEvent.wording }}</td>
-                        <td>{{ event.participants.contains(app.user) ? 'X' : '' }}</td>
-                        <td>{{ event.organizer.firstName }} {{ event.organizer.lastName }}</td>
-                        <td class="action-buttons">
-                            <a href="{{ path('event_details', {'id': event.id}) }}" class="btn btn-info btn-sm">Afficher</a>
-                            {% if event.participants.contains(app.user) %}
-                                <a href="{{ path('event_unsubscribe', {'id': event.id}) }}" class="btn btn-warning btn-sm">Se désister</a>
-                            {% else %}
-                                <a href="{{ path('event_join', {'id': event.id}) }}" class="btn btn-success btn-sm">S'inscrire</a>
-                            {% endif %}
-                            {% if event.organizer == app.user %}
-                                <a href="{{ path('event_update', {'id': event.id}) }}" class="btn btn-primary btn-sm">Modifier</a>
-                                <a href="{{ path('event_delete', {'id': event.id}) }}" class="btn btn-danger btn-sm">Supprimer</a>
-                            {% endif %}
-                        </td>
-                    </tr>
+                <tr>
+                    <td>{{ event.name }}</td>
+                    <td>{{ event.startDate|date('d/m/Y H:i') }}</td>
+                    <td>{{ event.dateLine|date('d/m/Y') }}</td>
+                    <td>{{ event.participants|length }}/{{ event.maxParticipants }}</td>
+                    <td>{{ event.stateEvent.wording }}</td>
+                    <td>{{ event.participants.contains(app.user) ? 'X' : '' }}</td>
+                    <td>{{ event.organizer.firstName }} {{ event.organizer.lastName }}</td>
+                    <td class="action-buttons">
+                        <a href="{{ path('event_details', {'id': event.id}) }}" class="btn btn-info btn-sm">Afficher</a>
+                        {% if event.participants.contains(app.user) %}
+                            <a href="{{ path('event_unsubscribe', {'id': event.id}) }}" class="btn btn-warning btn-sm">Se désister</a>
+                        {% else %}
+                            <a href="{{ path('event_join', {'id': event.id}) }}" class="btn btn-success btn-sm">S'inscrire</a>
+                        {% endif %}
+                        {% if event.organizer == app.user %}
+                            <a href="{{ path('event_update', {'id': event.id}) }}" class="btn btn-primary btn-sm">Modifier</a>
+                            <a href="{{ path('event_delete', {'id': event.id}) }}" class="btn btn-danger btn-sm">Supprimer</a>
+                        {% endif %}
+                    </td>
+                </tr>
             {% endfor %}
             </tbody>
         </table>
 
-            <div class="row">
-        <a href="{{ path('event_create') }}" class="btn btn-primary mb-2 col-2 mx-auto ">Créer une sortie</a>
-            </div>
+        <div class="row">
+            <a href="{{ path('event_create') }}" class="btn btn-primary mb-2 col-2 mx-auto">Créer une sortie</a>
+        </div>
     </div>
-
-
 {% endblock %}

@@ -22,12 +22,12 @@ class EventType extends AbstractType
     {
         $builder
             ->add('name' ,TextType::class,[
-                'label' => 'Nom de la sortie :',
+                'label' => "Nom de la sortie :",
             ])
 
             ->add('startDate', DateTimeType::class, [
                 'widget' => 'single_text',
-                'label' => 'Date et heure de la sortie : ',
+                'label' => "Date et heure de la sortie : ",
             ])
 
             ->add('dateLine', DateTimeType::class, [
@@ -37,15 +37,15 @@ class EventType extends AbstractType
 
 
             ->add('maxParticipants' , TextType::class,[
-                'label' => 'Nombre de participants :',
+                'label' => "Nombre de participants :",
             ])
 
             ->add('description' ,TextareaType::class,[
-                'label' => 'Description de la sortie : ',
+                'label' => "Description de la sortie : ",
             ])
 
             ->add('duration',TextType::class, [
-                'label' => 'Durée (en minutes): '
+                'label' => "Durée (en minutes): "
             ])
 
             ->add('stateEvent', EntityType::class, [

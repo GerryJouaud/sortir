@@ -31,33 +31,33 @@ class EventController extends AbstractController
     ): Response
     {
 
-        $allCampus=$campusRepository->findAll();
+        $allCampus = $campusRepository->findAll();
 
         $filters = [
             'campus' => $request->query->get('campus'),
             'search' => $request->query->get('search'),
             'startDate' => $request->query->get('start_date'),
-            'dateLine' => $request->query->get('dateLine'),
+            'dateLine' => $request->query->get('date_line'),
             'organisateur' => $request->query->get('organisateur'),
             'inscrit' => $request->query->get('inscrit'),
             'non_inscrit' => $request->query->get('non_inscrit'),
             'passees' => $request->query->get('passees'),
-//            'notArchived' => $request->query->get('notArchived'),
-
         ];
+
+        // Convertir les dates en objets DateTime si elles sont définies
+        if ($filters['startDate']) {
+            $filters['startDate'] = \DateTime::createFromFormat('Y-m-d H:i:s', $filters['startDate'] . ' 00:00:00');
+        }
+        if ($filters['dateLine']) {
+            $filters['dateLine'] = \DateTime::createFromFormat('Y-m-d H:i:s', $filters['dateLine'] . ' 00:00:00');
+        }
+
         $events = $eventRepository->findByFilters($filters, $this->getUser());
-//        $eventsArchived = $eventRepository->findByFilters($filters["notArchived"], $this->getUser());
 
-
-        //Récupération d'un event par son id
         return $this->render('main/index.html.twig', [
             'events' => $events,
-             'allCampus' => $allCampus,
+            'allCampus' => $allCampus,
             'filters' => $filters,
-//            "eventsArchived"=>$eventsArchived
-
-
-
         ]);
     }
 
