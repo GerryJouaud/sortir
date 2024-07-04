@@ -1,18 +1,14 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+<nav class="navbar navbar-expand-xl navbar-dark bg-black " >
     <div class="container-fluid">
-        <a class="navbar-brand"><img class="logo" src="{{ asset('images/logo-no-background.png') }}" alt="Sortir">Sortir</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand" style="font-family: Merienda;font-size: 2em" > Sortir !</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" >
             <span class="navbar-toggler-icon"></span>
+
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
-
-
-                {# Routes StateEventController #}
-
-
-
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+{#              Si on est bien connecté#}
                 {% if app.user %}
 
                     <li class="nav-item">
@@ -26,7 +22,7 @@
                         <a class="nav-link active" href="{{ path('user_details',{"id": app.user.id}) }}">Mon Profil</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="{{ path('user_logout') }}">Se Déconnecter ({{ app.user.firstName }}) </a>
+                        <a class="nav-link " href="{{ path('user_logout') }}">Se Déconnecter ({{ app.user.firstName }}) </a>
                     </li>
 
                 {% else %}
@@ -38,16 +34,8 @@
                     </li>
                 {% endif %}
 
-{#                <li class="nav-item" >#}
-{#                <p class="nav-link  "> Date du jour : {{ "now"|date("d/m/Y") }} </p>#}
-{#                </li>#}
-
             </ul>
-{#            <form class="d-flex" role="search">#}
-{#                <input class="form-control me-2" type="text" id="search" name="search" placeholder="AfterWork..."  value="{{ filters.search }}">#}
 
-{#                <button class="btn btn-outline-success"  type="submit"> Rechercher</button>#}
-{#            </form>#}
         </div>
     </div>
 </nav>
