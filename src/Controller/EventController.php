@@ -39,7 +39,10 @@ class EventController extends AbstractController
         }
 
 
+        // On récupère tous les campus
+        
         $allCampus = $campusRepository->findAll();
+        // On récupère les filtres depuis la requête
         $filters = [
             'campus' => $request->query->get('campus'),
             'search' => $request->query->get('search'),
@@ -51,6 +54,7 @@ class EventController extends AbstractController
             'passees' => $request->query->get('passees'),
         ];
 
+        // Conversion des dates si présentes
         if ($filters['startDate']) {
             $filters['startDate'] = \DateTime::createFromFormat('Y-m-d H:i:s', $filters['startDate'] . ' 00:00:00');
         }
@@ -58,7 +62,10 @@ class EventController extends AbstractController
             $filters['dateLine'] = \DateTime::createFromFormat('Y-m-d H:i:s', $filters['dateLine'] . ' 23:59:59');
         }
 
+        // On récupère les événements filtrés
         $events = $eventRepository->findByFilters($filters, $this->getUser());
+
+        // On rend la vue avec les événements, les campus et les filtres
         return $this->render('main/index.html.twig', [
             'events' => $events,
             'allCampus' => $allCampus,
