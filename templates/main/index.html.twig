@@ -50,8 +50,12 @@
                 </div>
                 <div class="col-3">
                     <input type="checkbox" class="form-check-input" id="passees" name="passees" {% if filters.passees %}checked{% endif %}>
-                    <label class="form-check-label" for="passees">Sorties archivées</label>
+                    <label class="form-check-label" for="passees">Sorties passées</label>
                 </div>
+{#                <div class="col-3">#}
+{#                    <input type="checkbox" class="form-check-input" id="archivedDate" name="archivedDate" {% if filters.archivedDate %}checked{% endif %}>#}
+{#                    <label class="form-check-label" for="archivedDate">Sorties archivées</label>#}
+{#                </div>#}
             </div>
 
             <button type="submit" class="btn btn-primary mb-2 col-2 mx-auto">Rechercher</button>

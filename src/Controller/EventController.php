@@ -15,7 +15,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-
 #[Route('/event', name: 'event_')]
 class EventController extends AbstractController
 {
@@ -43,13 +42,14 @@ class EventController extends AbstractController
             'passees' => $request->query->get('passees'),
         ];
 
-        // Convertir les dates en objets DateTime si elles sont définies
+
         if ($filters['startDate']) {
             $filters['startDate'] = \DateTime::createFromFormat('Y-m-d H:i:s', $filters['startDate'] . ' 00:00:00');
         }
         if ($filters['dateLine']) {
-            $filters['dateLine'] = \DateTime::createFromFormat('Y-m-d H:i:s', $filters['dateLine'] . ' 00:00:00');
+            $filters['dateLine'] = \DateTime::createFromFormat('Y-m-d H:i:s', $filters['dateLine'] . ' 23:59:59');
         }
+
 
         $events = $eventRepository->findByFilters($filters, $this->getUser());
 
@@ -191,7 +191,6 @@ public function create(
             return $this->redirectToRoute('user_login'); // Redirige vers la page de connexion
         }
 
-
         $user = $userRepository->find($this->getUser()->getId()); // Utilisateur connecté
         $event = $eventRepository->find($id);
         if(!$event){
@@ -231,7 +230,6 @@ public function create(
        }
 
 
-
     #[Route('/unsubscribe/{id}', name: 'unsubscribe')]
     public function unsubscribe(
         EntityManagerInterface $entityManager,
@@ -263,4 +261,3 @@ public function create(
     }
 
 }
-
