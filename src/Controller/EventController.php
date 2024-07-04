@@ -106,6 +106,8 @@ public function create(
     ):Response
     {
 
+        $today = new \DateTime();
+
         $statesEvent = $stateEventRepository->findAll();
         $stateEventCreated=$statesEvent[0]; // Sortie Etat "Created"
         $user = $this->getUser();
@@ -120,6 +122,11 @@ public function create(
             $event->setOrganizer($this->getUser());
             $event->addParticipant($user);
             $event->setStateEvent($stateEventCreated);
+
+            if($event->getStartDate() < $today ){
+                $this->addFlash('danger', "La date de début ne peut être dans le passé !");
+                return $this->redirectToRoute('home');
+            }
 
             $entityManager->persist($event);
             $entityManager->flush();
