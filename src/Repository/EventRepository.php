@@ -59,6 +59,12 @@ class EventRepository extends ServiceEntityRepository
                 ->setParameter('now', new \DateTime());
         }
 
+//        $oneMonthAgo = (new \DateTime())->modify('-1 month');
+//        if (!empty($filters['archivedDate'])) {
+//            $qb->andWhere('e.startDate < :oneMonthAgo')
+//                ->setParameter('oneMonthAgo', $oneMonthAgo);
+//        }
+
         return $qb->getQuery()->getResult();
     }
 
