@@ -61,8 +61,8 @@ class UserController extends AbstractController
             $this->addFlash('success', 'Utilisateur créé avec succès.');
 
             // Redirige vers la liste des utilisateurs
-            return $this->redirectToRoute('user_list', [
-                'user' => $user,
+            return $this->redirectToRoute('home', [
+
                 'form' => $form,
             ]);
         }
@@ -200,6 +200,7 @@ class UserController extends AbstractController
     {
         // Récupère l'utilisateur par son ID
         $user = $userRepository->find($id);
+
 
 
 

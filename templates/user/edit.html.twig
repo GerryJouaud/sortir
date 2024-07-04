@@ -4,7 +4,7 @@
     <div class="container my-3 d-flex justify-content-center align-items-center">
         <div class="card p-4 " >
             <div class="user-details mt-3">
-                <h1 class="card-title text-center mb-4">Modifier Mon Profil</h1>
+                <h1 class="card-title text-center mb-4">Modifier le Profil</h1>
                 <!-- Si l'utilisateur a déjà un fichier de poster, il est affiché avec une classe CSS img-thumbnail. -->
                 {% if user.poster %}
                     <div class="form-group text-center">
@@ -44,7 +44,7 @@
                     {{ form_widget(userForm.poster, { 'attr': {'class': 'form-control-file'} }) }}
                     {{ form_errors(userForm.poster) }}
                 </div>
-                <button type="submit" class="btn btn-primary mt-3">Modifier mon profil</button>
+                <button type="submit" class="btn btn-primary mt-3">Modifier le profil</button>
                 {{ form_end(userForm) }}
             </div>
         </div>

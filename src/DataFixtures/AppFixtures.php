@@ -1,7 +1,5 @@
 <?php
-
 namespace App\DataFixtures;
-
 use App\Entity\Campus;
 use App\Entity\City;
 use App\Entity\Event;
@@ -15,7 +13,6 @@ use App\Repository\UserRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-
 class AppFixtures extends Fixture
 {
     private UserPasswordHasherInterface $userPasswordHasher;
@@ -23,7 +20,6 @@ class AppFixtures extends Fixture
     private PlaceRepository $placeRepository;
     private EventRepository $eventRepository;
     private UserRepository $userRepository;
-
     public function __construct(
         UserPasswordHasherInterface $userPasswordHasher,
         CampusRepository $campusRepository,
@@ -37,7 +33,6 @@ class AppFixtures extends Fixture
         $this->eventRepository = $eventRepository;
         $this->userRepository = $userRepository;
     }
-
     public function load(ObjectManager $manager): void
     {
         $this->addCampus($manager);
@@ -47,11 +42,9 @@ class AppFixtures extends Fixture
         $this->addUsers($manager);
         $this->addEvent($manager);
     }
-
     private function addUsers(ObjectManager $manager)
     {
         $allCampus = $this->campusRepository->findAll();
-
         $usersData = [
             ['John', 'Doe', 'john.doe@example.com', '0612345670'],
             ['Jane', 'Smith', 'jane.smith@example.com', '0612345671'],
@@ -64,7 +57,6 @@ class AppFixtures extends Fixture
             ['David', 'Martinez', 'david.martinez@example.com', '0612345678'],
             ['Laura', 'Hernandez', 'laura.hernandez@example.com', '0612345679']
         ];
-
         foreach ($usersData as $i => $userData) {
             $user = new User();
             $user->setFirstName($userData[0])
@@ -75,27 +67,21 @@ class AppFixtures extends Fixture
                 ->setPassword($this->userPasswordHasher->hashPassword($user, 'password'))
                 ->setCampus($allCampus[$i % count($allCampus)])
                 ->setRoles(['ROLE_USER'])
-                ->setPoster('image.jpg');
-
+                ->setPoster('userPosterDefault.jpg');
             $manager->persist($user);
         }
-
         $manager->flush();
     }
-
     private function addCampus(ObjectManager $manager)
     {
         $campusNames = ["Rennes", "Nantes", "Quimper", "Niort"];
-
         foreach ($campusNames as $name) {
             $campus = new Campus();
             $campus->setName($name);
             $manager->persist($campus);
         }
-
         $manager->flush();
     }
-
     private function addCity(ObjectManager $manager)
     {
         $cities = [
@@ -104,21 +90,17 @@ class AppFixtures extends Fixture
             ["Quimper", "29000"],
             ["Niort", "79000"]
         ];
-
         foreach ($cities as $cityData) {
             $city = new City();
             $city->setName($cityData[0])
                 ->setZipCode($cityData[1]);
             $manager->persist($city);
         }
-
         $manager->flush();
     }
-
     private function addPlace(ObjectManager $manager)
     {
         $cities = $manager->getRepository(City::class)->findAll();
-
         $placesData = [
             ['Centre des Congrès', '12 Rue de la Gare', 48.117266, -1.6777926, $cities[0]],
             ['Salle Polyvalente', '45 Avenue Jean Jaurès', 47.218371, -1.553621, $cities[1]],
@@ -131,7 +113,6 @@ class AppFixtures extends Fixture
             ['Bibliothèque Centrale', '14 Rue des Écoles', 48.117266, -1.6777926, $cities[0]],
             ['Stade Municipal', '20 Rue du Stade', 47.218371, -1.553621, $cities[1]],
         ];
-
         foreach ($placesData as $placeData) {
             $place = new Place();
             $place->setName($placeData[0])
@@ -141,17 +122,14 @@ class AppFixtures extends Fixture
                 ->setCity($placeData[4]);
             $manager->persist($place);
         }
-
         $manager->flush();
     }
-
     private function addEvent(ObjectManager $manager)
     {
         $campuses = $this->campusRepository->findAll();
         $places = $this->placeRepository->findAll();
         $stateEvents = $manager->getRepository(StateEvent::class)->findAll();
         $users = $this->userRepository->findAll();
-
         $eventsData = [
             [
                 'name' => 'Conférence Tech 2024',
@@ -284,7 +262,6 @@ class AppFixtures extends Fixture
                 'participants' => [$users[1], $users[0]],
             ],
         ];
-
         foreach ($eventsData as $eventData) {
             $event = new Event();
             $event->setName($eventData['name'])
@@ -297,27 +274,21 @@ class AppFixtures extends Fixture
                 ->setPlace($eventData['place'])
                 ->setStateEvent($eventData['stateEvent'])
                 ->setOrganizer($eventData['organizer']);
-
             foreach ($eventData['participants'] as $participant) {
                 $event->addParticipant($participant);
             }
-
             $manager->persist($event);
         }
-
         $manager->flush();
     }
-
     private function addStateEvent(ObjectManager $manager)
     {
         $states = ["créé", "ouvert", "fermé", "en cours", "terminé", "annulé", "archivé"];
-
         foreach ($states as $state) {
             $stateEvent = new StateEvent();
             $stateEvent->setWording($state);
             $manager->persist($stateEvent);
         }
-
         $manager->flush();
     }
 }
