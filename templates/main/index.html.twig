@@ -1,13 +1,9 @@
 {# templates/main/index.html.twig #}
-
 {% extends 'base.html.twig' %}
-
 {% block title %}Accueil{% endblock %}
-
 {% block body %}
     <div class="container my-5 p-4 bg-light rounded col-8">
         <h2 class="text-center">Rechercher un sortie</h2>
-
         <form method="get" action="{{ path('event_list') }}" class="row g-3 mt-3">
             <div class="row gx-2 my-3">
                 <div class="col-3">
@@ -19,20 +15,17 @@
                         {% endfor %}
                     </select>
                 </div>
-
                 <div class="col-3">
                     <label for="search">Rechercher:</label>
                     <input type="text" id="search" name="search" class="form-control" value="{{ filters.search }}">
                 </div>
-
                 <div class="col-3">
-                    <label for="startDate">Du :</label>
-                    <input type="date" id="startDate" name="startDate" class="form-control" value="{{ filters.startDate }}">
+                    <label for="start_date">Du :</label>
+                    <input type="date" id="start_date" name="start_date" class="form-control" value="{{ filters.startDate|date('Y-m-d') }}">
                 </div>
-
                 <div class="col-3">
-                    <label for="endDate">Au :</label>
-                    <input type="date" id="endDate" name="endDate" class="form-control" value="{{ filters.endDate }}">
+                    <label for="date_line">Au :</label>
+                    <input type="date" id="date_line" name="date_line" class="form-control" value="{{ filters.dateLine|date('Y-m-d') }}">
                 </div>
             </div>
             <div class="row gx-2">
@@ -52,25 +45,22 @@
                     <input type="checkbox" class="form-check-input" id="passees" name="passees" {% if filters.passees %}checked{% endif %}>
                     <label class="form-check-label" for="passees">Sorties passées</label>
                 </div>
-{#                <div class="col-3">#}
-{#                    <input type="checkbox" class="form-check-input" id="archivedDate" name="archivedDate" {% if filters.archivedDate %}checked{% endif %}>#}
-{#                    <label class="form-check-label" for="archivedDate">Sorties archivées</label>#}
-{#                </div>#}
+                {#                <div class="col-3">#}
+                {#                    <input type="checkbox" class="form-check-input" id="archivedDate" name="archivedDate" {% if filters.archivedDate %}checked{% endif %}>#}
+                {#                    <label class="form-check-label" for="archivedDate">Sorties archivées</label>#}
+                {#                </div>#}
             </div>
-
             <button type="submit" class="btn btn-primary mb-2 col-2 mx-auto">Rechercher</button>
         </form>
     </div>
-
     <div class="container p-4 mb-5 rounded bg-light">
         <h2 class="text-center">Liste des sorties</h2>
-
         <table class="table table-striped mt-5">
             <thead>
             <tr>
                 <th>Nom de la sortie</th>
                 <th>Date de la sortie</th>
-                <th>Clôture des inscriptions</th>
+                <th>Clôture</th>
                 <th>Inscrits/Places</th>
                 <th>État</th>
                 <th>Inscrit</th>
@@ -104,9 +94,9 @@
             {% endfor %}
             </tbody>
         </table>
-
         <div class="row">
             <a href="{{ path('event_create') }}" class="btn btn-primary mb-2 col-2 mx-auto">Créer une sortie</a>
         </div>
     </div>
 {% endblock %}
+

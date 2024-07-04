@@ -1,11 +1,8 @@
 <?php
-
 namespace App\Repository;
-
 use App\Entity\Event;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-
 /**
  * @extends ServiceEntityRepository<Event>
  */
@@ -15,11 +12,9 @@ class EventRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Event::class);
     }
-
     public function findByFilters(array $filters, $user)
     {
         $qb = $this->createQueryBuilder('e');
-
         if (!empty($filters['campus'])) {
             $qb->andWhere('e.campus = :campus')
                 ->setParameter('campus', $filters['campus']);
@@ -28,20 +23,14 @@ class EventRepository extends ServiceEntityRepository
             $qb->andWhere('e.name LIKE :search')
                 ->setParameter('search', '%' . $filters['search'] . '%');
         }
-//        if (!empty($filters['startDate'])) {
-//            $qb->andWhere('e.startDate = :startDate ')
-//                ->setParameter('startDate', $filters['startDate']);
-//        }
-        if (!empty($filters['startDate']) && !empty($filters['endDate'])) {
-            $qb->where('e.startDate BETWEEN :startDateSearch AND :endDateSearch')
-                ->setParameter('startDateSearch', $filters['startDate']->format('Y-m-d') . ' 00:00:00')
-                ->setParameter('endDateSearch', $filters['endDate']->format('Y-m-d') . ' 23:59:59');
+        if (!empty($filters['startDate'])) {
+            $qb->andWhere('e.startDate >= :startDate')
+                ->setParameter('startDate', $filters['startDate']);
         }
-
-//        if (!empty($filters['dateLine'])) {
-//            $qb->andWhere('e.startDate <= :dateLine')
-//                ->setParameter('dateLine', $filters['dateLine']);
-//        }
+        if (!empty($filters['dateLine'])) {
+            $qb->andWhere('e.startDate <= :dateLine')
+                ->setParameter('dateLine', $filters['dateLine']);
+        }
         if (!empty($filters['organisateur'])) {
             $qb->andWhere('e.organizer = :organizer')
                 ->setParameter('organizer', $user);
@@ -58,16 +47,13 @@ class EventRepository extends ServiceEntityRepository
             $qb->andWhere('e.startDate < :now')
                 ->setParameter('now', new \DateTime());
         }
-
 //        $oneMonthAgo = (new \DateTime())->modify('-1 month');
 //        if (!empty($filters['archivedDate'])) {
 //            $qb->andWhere('e.startDate < :oneMonthAgo')
 //                ->setParameter('oneMonthAgo', $oneMonthAgo);
 //        }
-
         return $qb->getQuery()->getResult();
     }
-
 
 //    /**
 //     * @return Event[] Returns an array of Event objects
@@ -83,7 +69,6 @@ class EventRepository extends ServiceEntityRepository
 //            ->getResult()
 //        ;
 //    }
-
 //    public function findOneBySomeField($value): ?Event
 //    {
 //        return $this->createQueryBuilder('e')
@@ -93,5 +78,4 @@ class EventRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-
 }
