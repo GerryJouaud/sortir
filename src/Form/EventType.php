@@ -48,10 +48,7 @@ class EventType extends AbstractType
                 'label' => "Durée (en minutes): "
             ])
 
-            ->add('stateEvent', EntityType::class, [
-                'class' => StateEvent::class,
-                'choice_label' => 'wording',
-            ])
+
 
             ->add('place', EntityType::class, [
                 'class' => Place::class,

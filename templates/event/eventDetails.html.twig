@@ -40,7 +40,7 @@
 
 
 
-                {% if app.user == event.organizer %}
+                {% if app.user == event.organizer or app.user.roles[0]== 'ROLE_ADMIN' %}
                     <a class="btn btn-primary " href="{{ path('event_update',{"id":event.id}) }}">Modifier l'évenement</a>
                     <a class="btn btn-danger " href="{{ path('event_delete',{"id":event.id}) }}">Supprimer l'événement</a>
                 {% endif %}

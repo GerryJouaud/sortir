@@ -85,7 +85,7 @@
                         {% else %}
                             <a href="{{ path('event_join', {'id': event.id}) }}" class="btn btn-success btn-sm">S'inscrire</a>
                         {% endif %}
-                        {% if event.organizer == app.user %}
+                        {% if event.organizer == app.user or app.user.roles[0] == 'ROLE_ADMIN' %}
                             <a href="{{ path('event_update', {'id': event.id}) }}" class="btn btn-primary btn-sm">Modifier</a>
                             <a href="{{ path('event_delete', {'id': event.id}) }}" class="btn btn-danger btn-sm">Supprimer</a>
                         {% endif %}

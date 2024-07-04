@@ -29,11 +29,13 @@
                     <li class="nav-item">
                         <a class="nav-link active" href="{{ path('user_login') }}">Se Connecter </a>
                     </li>
+
+                {% endif %}
+                {% if app.user and app.user.roles == ["ROLE_ADMIN"] %}
                     <li class="nav-item">
                         <a class="nav-link active" href="{{ path('app_registrationapp_register') }}">Je M'inscris</a>
                     </li>
                 {% endif %}
-
             </ul>
 
         </div>

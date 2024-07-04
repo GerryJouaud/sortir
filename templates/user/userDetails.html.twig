@@ -6,8 +6,10 @@
                 <h1 class="card-title text-center mb-4">Profil de {{ user.firstName }}</h1>
                 <div class="row">
                     <div class="col-md-12 text-center">
+
                         <img src="{{ asset('images/posters/' ~ user.poster) }}" alt="Photo de {{ user.firstName }}" class="rounded-circle img-thumbnail mb-3" style="width: 150px; height: 150px; object-fit: cover; ">
                     </div>
+
                     <div class="col-md-12">
                         <div class="mb-3">
                             <strong>Nom de famille :</strong> {{ user.lastName }}
@@ -27,8 +29,10 @@
 
                         <div class="text-center">
 
-                            {% if app.user.id == user.id  %}
-                            <a href="{{ path('user_update', {'id': user.id}) }}" class="btn btn-primary me-2">Modifier mon profil</a>
+                            {% if app.user.id == user.id or app.user.roles[0]== 'ROLE_ADMIN'  %}
+                            <a href="{{ path('user_update', {'id': user.id}) }}" class="btn btn-primary me-2">Modifier le profil</a>
+                            <a href="{{ path('user_delete', {'id': user.id}) }}" class="btn btn-danger me-2">Supprimer le profil</a>
+
                             {% endif %}
 
                             <a href="{{ path('event_list') }}" class="btn btn-secondary">Retour à la page d'accueil</a>

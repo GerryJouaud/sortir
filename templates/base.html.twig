@@ -24,10 +24,12 @@
     {% endblock %}
 </head>
 <body>
-<header>
+<header class="">
+
     {% include "menu/nav.html.twig" %}
+
 </header>
-<main>
+<main class="">
 
     {% for label, messages in app.flashes %}
         {% for message in messages %}
@@ -38,11 +40,13 @@
 
         {% endfor %}
     {% endfor %}
-    <div class="container">
-{% block body %}{% endblock %}
-    </div>
+
+
+    {% block body %}
+    {% endblock %}
+
 </main>
-<footer>
+<footer class=" my-5">
     {% include "menu/footer.html.twig" %}
 </footer>
 </body>

@@ -61,7 +61,7 @@ class RegistrationController extends AbstractController
             // Enregistrement des changements dans la base de données
             $entityManager->flush();
 
-            $this->addFlash('success', 'Registration successful!');
+            $this->addFlash('success', 'Enregistrement réussi!');
             // Authentification automatique de l'utilisateur après l'inscription
             return $userAuthenticator->authenticateUser(
                 $user,

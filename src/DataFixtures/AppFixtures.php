@@ -1,10 +1,5 @@
 <?php
-
 namespace App\DataFixtures;
-
-
-
-// Importation des entités nécessaires
 use App\Entity\Campus;
 use App\Entity\City;
 use App\Entity\Event;
@@ -17,211 +12,283 @@ use App\Repository\PlaceRepository;
 use App\Repository\UserRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Faker\Factory;
-use Faker\Generator;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-
-class AppFixtures extends Fixture{
-
-    private readonly Generator $faker;
+class AppFixtures extends Fixture
+{
     private UserPasswordHasherInterface $userPasswordHasher;
-
-     //Constructeur pour initialiser le hasher de mots de passe
-
-
-    public function __construct(UserPasswordHasherInterface $userPasswordHasher,
-                                private CampusRepository $campusRepository,
-                                private PlaceRepository $placeRepository,
-                                private EventRepository $eventRepository,
-                                private UserRepository $userRepository,
-    )
-    {
-        $this-> faker = Factory::create('fr_FR');
+    private CampusRepository $campusRepository;
+    private PlaceRepository $placeRepository;
+    private EventRepository $eventRepository;
+    private UserRepository $userRepository;
+    public function __construct(
+        UserPasswordHasherInterface $userPasswordHasher,
+        CampusRepository $campusRepository,
+        PlaceRepository $placeRepository,
+        EventRepository $eventRepository,
+        UserRepository $userRepository
+    ) {
+        $this->userPasswordHasher = $userPasswordHasher;
+        $this->campusRepository = $campusRepository;
+        $this->placeRepository = $placeRepository;
+        $this->eventRepository = $eventRepository;
+        $this->userRepository = $userRepository;
     }
-    public function load(ObjectManager $manager ):void
+    public function load(ObjectManager $manager): void
     {
         $this->addCampus($manager);
         $this->addCity($manager);
         $this->addStateEvent($manager);
         $this->addPlace($manager);
-        $this->addUsers(50, $manager);
+        $this->addUsers($manager);
         $this->addEvent($manager);
-
-
-
     }
-    public function addUsers(int $number,ObjectManager $manager)
+    private function addUsers(ObjectManager $manager)
     {
-        // Récupération de tous les campus pour assignation aléatoire
-         $allCampus = $this->campusRepository->findAll();
-        // Création de 50 utilisateurs aléatoires
-        for ($i = 0; $i < $number; $i++) {
+        $allCampus = $this->campusRepository->findAll();
+        $usersData = [
+            ['John', 'Doe', 'john.doe@example.com', '0612345670'],
+            ['Jane', 'Smith', 'jane.smith@example.com', '0612345671'],
+            ['Paul', 'Brown', 'paul.brown@example.com', '0612345672'],
+            ['Anna', 'Johnson', 'anna.johnson@example.com', '0612345673'],
+            ['James', 'Williams', 'james.williams@example.com', '0612345674'],
+            ['Emily', 'Jones', 'emily.jones@example.com', '0612345675'],
+            ['Michael', 'Garcia', 'michael.garcia@example.com', '0612345676'],
+            ['Sarah', 'Miller', 'sarah.miller@example.com', '0612345677'],
+            ['David', 'Martinez', 'david.martinez@example.com', '0612345678'],
+            ['Laura', 'Hernandez', 'laura.hernandez@example.com', '0612345679']
+        ];
+        foreach ($usersData as $i => $userData) {
             $user = new User();
-            $user
-                ->setFirstName($this->faker->firstName)
-                ->setLastName($this->faker->lastName())
-                ->setEmail($this->faker->email())
-                ->setPhone($this->faker->phoneNumber)
-                ->setState($this->faker->boolean)
-                ->setPassword($this->faker->password())
-                ->setCampus($this->faker->randomElement($allCampus))
+            $user->setFirstName($userData[0])
+                ->setLastName($userData[1])
+                ->setEmail($userData[2])
+                ->setPhone($userData[3])
+                ->setState(true)
+                ->setPassword($this->userPasswordHasher->hashPassword($user, 'password'))
+                ->setCampus($allCampus[$i % count($allCampus)])
                 ->setRoles(['ROLE_USER'])
-                ->setPoster('image.jpg');
-
-
+                ->setPoster('userPosterDefault.jpg');
             $manager->persist($user);
         }
-
         $manager->flush();
-
     }
-
-    public function addCampus(ObjectManager $manager){
-
-        // Fonction pour ajouter des campus
-        $campusRennes = new Campus();
-        $campusRennes
-            ->setName("Rennes");
-        $manager->persist($campusRennes);
-
-        $campusNantes = new Campus();
-        $campusNantes
-            ->setName("Nantes");
-        $manager->persist($campusNantes);
-
-        $campusQuimper = new Campus();
-        $campusQuimper
-            ->setName("Quimper");
-        $manager->persist($campusQuimper);
-
-        $campusNiort = new Campus();
-        $campusNiort
-            ->setName("Niort");
-        $manager->persist($campusNiort);
-
-        $manager->flush();
-
-    }
-
-
-    public function addCity(ObjectManager $manager)
+    private function addCampus(ObjectManager $manager)
     {
-        $cityRennes = new City();
-        $cityRennes
-            ->setName("Rennes")
-            ->setZipCode("35000");
-        $manager->persist($cityRennes);
-
-        $cityNantes = new City();
-        $cityNantes
-            ->setName("Nantes")
-            ->setZipCode("44000");
-        $manager->persist($cityNantes);
-
-        $cityQuimper = new City();
-        $cityQuimper
-            ->setName("Quimper")
-            ->setZipCode("29000");
-        $manager->persist($cityQuimper);
-
-        $cityNiort = new City();
-        $cityNiort
-            ->setName("Niort")
-            ->setZipCode("79000");
-        $manager->persist($cityNiort);
-
+        $campusNames = ["Rennes", "Nantes", "Quimper", "Niort"];
+        foreach ($campusNames as $name) {
+            $campus = new Campus();
+            $campus->setName($name);
+            $manager->persist($campus);
+        }
         $manager->flush();
-
     }
-
-
-    public  function addPlace(ObjectManager $manager ){
-        // Récupération de toutes les villes pour assignation aléatoire
-        for ($i = 0 ; $i<10; $i++){
+    private function addCity(ObjectManager $manager)
+    {
+        $cities = [
+            ["Rennes", "35000"],
+            ["Nantes", "44000"],
+            ["Quimper", "29000"],
+            ["Niort", "79000"]
+        ];
+        foreach ($cities as $cityData) {
+            $city = new City();
+            $city->setName($cityData[0])
+                ->setZipCode($cityData[1]);
+            $manager->persist($city);
+        }
+        $manager->flush();
+    }
+    private function addPlace(ObjectManager $manager)
+    {
+        $cities = $manager->getRepository(City::class)->findAll();
+        $placesData = [
+            ['Centre des Congrès', '12 Rue de la Gare', 48.117266, -1.6777926, $cities[0]],
+            ['Salle Polyvalente', '45 Avenue Jean Jaurès', 47.218371, -1.553621, $cities[1]],
+            ['Parc des Expositions', '101 Rue de Paris', 48.002778, -4.0925, $cities[2]],
+            ['Espace Culturel', '50 Boulevard de la Liberté', 46.323722, -0.458744, $cities[3]],
+            ['Maison des Associations', '22 Rue de Bretagne', 48.117266, -1.6777926, $cities[0]],
+            ['Théâtre Municipal', '5 Place du Théâtre', 47.218371, -1.553621, $cities[1]],
+            ['Galerie d\'Art', '8 Rue des Arts', 48.002778, -4.0925, $cities[2]],
+            ['Hôtel de Ville', '10 Place de la Mairie', 46.323722, -0.458744, $cities[3]],
+            ['Bibliothèque Centrale', '14 Rue des Écoles', 48.117266, -1.6777926, $cities[0]],
+            ['Stade Municipal', '20 Rue du Stade', 47.218371, -1.553621, $cities[1]],
+        ];
+        foreach ($placesData as $placeData) {
             $place = new Place();
-            $place
-                ->setName($this->faker->word)
-                ->setStreet($this->faker->streetAddress)
-                ->setLatitude($this->faker->latitude)
-                ->setLongitude($this->faker->longitude)
-                ->setCity($this->faker->randomElement($manager->getRepository(City::class)->findAll()));
+            $place->setName($placeData[0])
+                ->setStreet($placeData[1])
+                ->setLatitude($placeData[2])
+                ->setLongitude($placeData[3])
+                ->setCity($placeData[4]);
             $manager->persist($place);
-
         }
-
         $manager->flush();
     }
-
-
-    // Fonction pour ajouter des événements
-    public function addEvent(ObjectManager $manager)
+    private function addEvent(ObjectManager $manager)
     {
-
-        // Création de 10 événements aléatoires
-        for($i = 0; $i < 10; $i++){
-            $faker = Factory::create('fr_FR');
-
+        $campuses = $this->campusRepository->findAll();
+        $places = $this->placeRepository->findAll();
+        $stateEvents = $manager->getRepository(StateEvent::class)->findAll();
+        $users = $this->userRepository->findAll();
+        $eventsData = [
+            [
+                'name' => 'Conférence Tech 2024',
+                'startDate' => new \DateTime('2024-09-01 10:00:00'),
+                'duration' => 180,
+                'dateLine' => new \DateTime('2024-08-25 23:59:59'),
+                'maxParticipants' => 100,
+                'description' => 'Une conférence sur les dernières avancées technologiques.',
+                'campus' => $campuses[0],
+                'place' => $places[0],
+                'stateEvent' => $stateEvents[1],
+                'organizer' => $users[0],
+                'participants' => [$users[1], $users[2]],
+            ],
+            [
+                'name' => 'Atelier d\'Art',
+                'startDate' => new \DateTime('2024-07-15 14:00:00'),
+                'duration' => 120,
+                'dateLine' => new \DateTime('2024-07-10 23:59:59'),
+                'maxParticipants' => 20,
+                'description' => 'Un atelier pour explorer votre côté artistique.',
+                'campus' => $campuses[1],
+                'place' => $places[1],
+                'stateEvent' => $stateEvents[0],
+                'organizer' => $users[1],
+                'participants' => [$users[3], $users[4]],
+            ],
+            [
+                'name' => 'Festival de Musique',
+                'startDate' => new \DateTime('2024-08-20 18:00:00'),
+                'duration' => 300,
+                'dateLine' => new \DateTime('2024-08-15 23:59:59'),
+                'maxParticipants' => 500,
+                'description' => 'Un festival avec diverses performances musicales.',
+                'campus' => $campuses[2],
+                'place' => $places[2],
+                'stateEvent' => $stateEvents[1],
+                'organizer' => $users[2],
+                'participants' => [$users[5], $users[6]],
+            ],
+            [
+                'name' => 'Cours de Cuisine',
+                'startDate' => new \DateTime('2024-09-05 09:00:00'),
+                'duration' => 90,
+                'dateLine' => new \DateTime('2024-09-01 23:59:59'),
+                'maxParticipants' => 15,
+                'description' => 'Apprenez à cuisiner de délicieux repas.',
+                'campus' => $campuses[3],
+                'place' => $places[3],
+                'stateEvent' => $stateEvents[0],
+                'organizer' => $users[3],
+                'participants' => [$users[7], $users[8]],
+            ],
+            [
+                'name' => 'Foire Scientifique',
+                'startDate' => new \DateTime('2024-10-10 11:00:00'),
+                'duration' => 240,
+                'dateLine' => new \DateTime('2024-10-05 23:59:59'),
+                'maxParticipants' => 200,
+                'description' => 'Explorez les dernières découvertes scientifiques.',
+                'campus' => $campuses[0],
+                'place' => $places[4],
+                'stateEvent' => $stateEvents[1],
+                'organizer' => $users[4],
+                'participants' => [$users[9], $users[0]],
+            ],
+            [
+                'name' => 'Rencontre Littéraire',
+                'startDate' => new \DateTime('2024-11-12 15:00:00'),
+                'duration' => 180,
+                'dateLine' => new \DateTime('2024-11-05 23:59:59'),
+                'maxParticipants' => 50,
+                'description' => 'Rencontrez et discutez avec des passionnés de littérature.',
+                'campus' => $campuses[1],
+                'place' => $places[5],
+                'stateEvent' => $stateEvents[0],
+                'organizer' => $users[5],
+                'participants' => [$users[1], $users[2]],
+            ],
+            [
+                'name' => 'Présentation de Startups',
+                'startDate' => new \DateTime('2024-12-01 14:00:00'),
+                'duration' => 120,
+                'dateLine' => new \DateTime('2024-11-25 23:59:59'),
+                'maxParticipants' => 30,
+                'description' => 'Présentez vos idées de startups à des investisseurs potentiels.',
+                'campus' => $campuses[2],
+                'place' => $places[6],
+                'stateEvent' => $stateEvents[1],
+                'organizer' => $users[6],
+                'participants' => [$users[3], $users[4]],
+            ],
+            [
+                'name' => 'Retraite de Yoga',
+                'startDate' => new \DateTime('2024-07-20 08:00:00'),
+                'duration' => 480,
+                'dateLine' => new \DateTime('2024-07-15 23:59:59'),
+                'maxParticipants' => 25,
+                'description' => 'Une journée complète consacrée au yoga et à la méditation.',
+                'campus' => $campuses[3],
+                'place' => $places[7],
+                'stateEvent' => $stateEvents[0],
+                'organizer' => $users[7],
+                'participants' => [$users[5], $users[6]],
+            ],
+            [
+                'name' => 'Sommet Environnemental',
+                'startDate' => new \DateTime('2024-08-25 09:00:00'),
+                'duration' => 360,
+                'dateLine' => new \DateTime('2024-08-20 23:59:59'),
+                'maxParticipants' => 150,
+                'description' => 'Discussions sur les solutions aux problèmes environnementaux.',
+                'campus' => $campuses[0],
+                'place' => $places[8],
+                'stateEvent' => $stateEvents[1],
+                'organizer' => $users[8],
+                'participants' => [$users[7], $users[9]],
+            ],
+            [
+                'name' => 'Exposition de Photographie',
+                'startDate' => new \DateTime('2024-09-10 10:00:00'),
+                'duration' => 240,
+                'dateLine' => new \DateTime('2024-09-05 23:59:59'),
+                'maxParticipants' => 80,
+                'description' => 'Une exposition de photographies impressionnantes par divers artistes.',
+                'campus' => $campuses[1],
+                'place' => $places[9],
+                'stateEvent' => $stateEvents[0],
+                'organizer' => $users[9],
+                'participants' => [$users[1], $users[0]],
+            ],
+        ];
+        foreach ($eventsData as $eventData) {
             $event = new Event();
-            $event
-                ->setName($faker->word)
-                ->setStartDate($faker->dateTimeBetween("-1 month", "+6 month"))
-                ->setDuration($faker->numberBetween(60,240))
-                ->setDateLine($faker->dateTimeBetween("1 month", "+6 month"))
-                ->setMaxParticipants($faker->numberBetween(1,10))
-                ->setDescription($faker->paragraph())
-                ->setCampus($faker->randomElement($manager->getRepository(Campus::class)->findAll()))
-                ->setPlace($faker->randomElement($manager->getRepository(Place::class)->findAll()))
-                ->setStateEvent($faker->randomElement($manager->getRepository(StateEvent::class)->findAll()))
-                ->setOrganizer($faker->randomElement($manager->getRepository(User::class)->findAll()));
-
+            $event->setName($eventData['name'])
+                ->setStartDate($eventData['startDate'])
+                ->setDuration($eventData['duration'])
+                ->setDateLine($eventData['dateLine'])
+                ->setMaxParticipants($eventData['maxParticipants'])
+                ->setDescription($eventData['description'])
+                ->setCampus($eventData['campus'])
+                ->setPlace($eventData['place'])
+                ->setStateEvent($eventData['stateEvent'])
+                ->setOrganizer($eventData['organizer']);
+            foreach ($eventData['participants'] as $participant) {
+                $event->addParticipant($participant);
+            }
             $manager->persist($event);
-
         }
         $manager->flush();
-
     }
-
-
-    public function addStateEvent(ObjectManager $manager)
+    private function addStateEvent(ObjectManager $manager)
     {
-        // Création et persistance de chaque état d'événement
-        $stateEventCreated = new StateEvent();
-        $stateEventCreated
-            ->setWording("created");
-        $manager->persist($stateEventCreated);
-
-        $stateEventOpen = new StateEvent();
-        $stateEventOpen
-            ->setWording("open");
-        $manager->persist($stateEventOpen);
-
-        $stateEventClosed = new StateEvent();
-        $stateEventClosed
-            ->setWording("closed");
-        $manager->persist($stateEventClosed);
-
-        $stateEventInProgress = new StateEvent;
-        $stateEventInProgress
-            ->setWording("inProgress");
-        $manager->persist($stateEventInProgress);
-
-        $stateEventFinished = new StateEvent;
-        $stateEventFinished
-            ->setWording("finished");
-        $manager->persist($stateEventFinished);
-
-        $stateEventCanceled = new StateEvent;
-        $stateEventCanceled
-            ->setWording("canceled");
-        $manager->persist($stateEventCanceled);
-
-        $stateEventArchived = new  StateEvent;
-        $stateEventArchived
-            ->setWording("archived");
-        $manager->persist($stateEventArchived);
-
+        $states = ["créé", "ouvert", "fermé", "en cours", "terminé", "annulé", "archivé"];
+        foreach ($states as $state) {
+            $stateEvent = new StateEvent();
+            $stateEvent->setWording($state);
+            $manager->persist($stateEvent);
+        }
         $manager->flush();
     }
 }
-
-

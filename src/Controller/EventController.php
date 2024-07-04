@@ -237,16 +237,20 @@ class EventController extends AbstractController
         $user = $userRepository->find($this->getUser()->getId());
         $event = $eventRepository->find($id);
         if (!$event) {
-            $this->addFlash('error', "Cette sortie n'a pas été trouvée !");
+            $this->addFlash('danger', "Cette sortie n'a pas été trouvée !");
+            return $this->redirectToRoute('home');
         }
         if (!$event->getParticipants()->contains($user)) {
-            $this->addFlash('error', "Vous n'êtes pas inscrit à cette sortie !");
+            $this->addFlash('danger', "Vous n'êtes pas inscrit à cette sortie !");
+            return $this->redirectToRoute('home');
         }
-        if ($event->getStartDate() > new \DateTime('now') ) {
-            $this->addFlash('error', "La sortie a débutée, vous ne pouvez vous désinscrire !");
+        if ($event->getStartDate() < new \DateTime('now') ) {
+            $this->addFlash('danger', "La sortie a débutée, vous ne pouvez vous désinscrire !");
+            return $this->redirectToRoute('home');
         }
         if ($event->getOrganizer() == $this->getUser()) {
-            $this->addFlash('error', "Vous organisez cette sortie, vous ne pouvez pas vous désinscire !");
+            $this->addFlash('danger', "Vous organisez cette sortie, vous ne pouvez pas vous désinscire !");
+            return $this->redirectToRoute('home');
         }
         $event->removeParticipant($user);
         $entityManager->persist($event);
