@@ -32,9 +32,9 @@
                             <div class="row"></divclass>
                                     <p class="card-text">{{ eventRegistered.description }}</p>
                                     <p class="card-text"> {{ eventRegistered.place.name }} - {{ eventRegistered.place.city.name }} </p>
-                                <div>
-                                    <a href="{{ path('event_details',{"id":eventRegistered.id}) }}" class="btn btn-primary col-auto mx-auto ">Afficher </a>
-                                </div>
+                            </div>
+                            <div class="row">
+                                <a href="{{ path('event_details',{"id":eventRegistered.id}) }}" class="btn btn-primary col-auto my-3 mx-auto ">Afficher </a>
                             </div>
                         </div>
                     </div>

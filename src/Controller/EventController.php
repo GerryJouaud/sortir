@@ -135,9 +135,22 @@ class EventController extends AbstractController
         int $id
     ):Response
     {
+        $user=$this->getUser();
         $event = $eventRepository->find($id);
         if(!$event){
             throw $this->createNotFoundException("La sortie n'a pas été trouvé");
+        }
+        if($user->getRoles()[0]=='ROLE_ADMIN'){
+            $eventForm = $this->createForm(EventType::class, $event);
+            $eventForm->handleRequest($request);
+            if($eventForm->isSubmitted() && $eventForm->isValid()){
+                $entityManager->persist($event);
+                $entityManager->flush();
+                $this->addFlash('success', "Modifications ajoutées");
+                return $this->redirectToRoute('home');
+            }
+            return $this->render('event/updateEvent.html.twig', [
+                'eventForm' => $eventForm]);
         }
         if($event->getOrganizer() !== $this->getUser()){
             throw $this->createNotFoundException("Vous n'êtes pas l'organisateur, vous ne pouvez pas modifier cette sortie");
@@ -162,15 +175,23 @@ class EventController extends AbstractController
         int $id
     ):Response
     {
+        $user = $this->getUser();
         $event = $eventRepository->find($id);
         if(!$event){
             $this->addFlash('danger', "Sortie non trouvée !");
             return $this->redirectToRoute('home');
         }
-        if($event->getOrganizer() !== $this->getUser()){
+        if($user->getRoles()[0]=='ROLE_ADMIN'){
+            $entityManager->remove($event);
+            $entityManager->flush();
+            $this->addFlash( 'success' ,'Sortie supprimée !!');
+            return $this->redirectToRoute('home');
+        }
+        if($event->getOrganizer() !== $this->getUser()  ){
             $this->addFlash('danger', "Vous n'êtes pas l'organisateur, vous ne pouvez pas supprimer cette sortie !");
             return $this->redirectToRoute('home');
         }
+
         $entityManager->remove($event);
         $entityManager->flush();
         $this->addFlash( 'success' ,'Sortie supprimée !!');

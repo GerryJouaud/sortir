@@ -4,48 +4,54 @@
 
 
 
-    <div class="container-fluid bg-body-secondary rounded p-5 m-5">
-        <h1>{{ event.name }}</h1>
-        <p>{{ event.description }}</p>
+    <div class="container bg-body-secondary rounded px-5 my-5  ">
 
-        {% if event.participants.count > 0 %}
-        <div class="list-group col-3 ">
-            <a  class="list-group-item list-group-item-action active" aria-current="true">
-                Liste des participants:
-            </a>
+        <div class="row py-5 ">
+            <div class="col-8 ">
+                <h1>{{ event.name }}</h1>
+                <p>{{ event.description }}</p>
 
-        {% for participant in event.participants %}
 
-                <a href="{{ path('user_details',{"id":participant.id}) }}" class="list-group-item list-group-item-action">{{ participant.firstName }} {{ participant.lastName }}</a>
+                    <h4>Lieu : {{ event.place.name }}</h4>
 
-        {% endfor %}
+                    <ul>
+                        <li>Rue : {{ event.place.street }} </li>
+                        <li>Code postal : {{ event.place.city.zipCode }}</li>
+                        <li>Latitude : {{ event.place.latitude }}</li>
+                        <li>Longitude : {{ event.place.longitude }} </li>
+                    </ul>
+            </div>
+            <div class="col-4">
+                {% if event.participants.count > 0 %}
+                    <div class="list-group  ">
+                        <a  class="list-group-item list-group-item-action active" aria-current="true">
+                            Liste des participants:
+                        </a>
+
+                        {% for participant in event.participants %}
+
+                            <a href="{{ path('user_details',{"id":participant.id}) }}" class="list-group-item list-group-item-action">{{ participant.firstName }} {{ participant.lastName }}</a>
+
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
         </div>
-        {% endif %}
-            <div>
-                <h4>Lieu : {{ event.place.name }}</h4>
-
-                <ul>
-                    <li>Rue : {{ event.place.street }} </li>
-                    <li>Code postal : {{ event.place.city.zipCode }}</li>
-                    <li>Latitude : {{ event.place.latitude }}</li>
-                    <li>Longitude : {{ event.place.longitude }} </li>
-                </ul>
-
+        <div class="row py-5">
 
                 {% if event.participants.contains(user) %}
-                <a class="btn btn-warning " href="{{ path('event_unsubscribe',{"id":event.id}) }}">Se désinscrire</a>
-                    {% else %}
-                        <a class="btn btn-success " href="{{ path('event_join',{"id":event.id}) }}">S'inscrire</a>
+                    <a class="btn btn-warning col-2 mx-auto " href="{{ path('event_unsubscribe',{"id":event.id}) }}">Se désinscrire</a>
+                {% else %}
+                    <a class="btn btn-success col-2 mx-auto " href="{{ path('event_join',{"id":event.id}) }}">S'inscrire</a>
                 {% endif %}
-
-
 
                 {% if app.user == event.organizer or app.user.roles[0]== 'ROLE_ADMIN' %}
-                    <a class="btn btn-primary " href="{{ path('event_update',{"id":event.id}) }}">Modifier l'évenement</a>
-                    <a class="btn btn-danger " href="{{ path('event_delete',{"id":event.id}) }}">Supprimer l'événement</a>
+                    <a class="btn btn-primary col-2  mx-auto " href="{{ path('event_update',{"id":event.id}) }}">Modifier l'évenement</a>
+                    <a class="btn btn-danger col-2 mx-auto " href="{{ path('event_delete',{"id":event.id}) }}">Supprimer l'événement</a>
                 {% endif %}
 
-            </div>
+        </div>
 
 
 
