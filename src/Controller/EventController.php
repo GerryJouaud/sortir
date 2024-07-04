@@ -40,7 +40,7 @@ class EventController extends AbstractController
 
 
         // On récupère tous les campus
-        
+
         $allCampus = $campusRepository->findAll();
         // On récupère les filtres depuis la requête
         $filters = [
@@ -54,7 +54,7 @@ class EventController extends AbstractController
             'passees' => $request->query->get('passees'),
         ];
 
-        // Conversion des dates si présentes
+        // Conversion des dates en string si présentes
         if ($filters['startDate']) {
             $filters['startDate'] = \DateTime::createFromFormat('Y-m-d H:i:s', $filters['startDate'] . ' 00:00:00');
         }
