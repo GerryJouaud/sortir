@@ -30,26 +30,40 @@ class EventController extends AbstractController
 
     ): Response
     {
+        // On récupère chacun des Start Date pour vérifier si elles ont dépassée 1 mois, si oui elles sont "archived"
+        $allEvents = $eventRepository->findAll();
+        $statesEvent = $stateEventRepository->findAll();
+        $stateEventArchived=$statesEvent[6]; // Sortie Etat "Archived"
+        $limitArchived=new \DateTime();
+        $limitArchived->modify('-1 month');
+
+        foreach($allEvents as $event ){
+            if($event->getStartDate() <= $limitArchived && $event->getStateEvent() != $stateEventArchived ){
+                $event->setStateEvent($stateEventArchived);
+            }
+        }
+
         $allCampus = $campusRepository->findAll();
 
         $filters = [
             'campus' => $request->query->get('campus'),
             'search' => $request->query->get('search'),
             'startDate' => $request->query->get('start_date'),
-            'dateLine' => $request->query->get('date_line'),
+            'endDate' => $request->query->get('end_date'),
             'organisateur' => $request->query->get('organisateur'),
             'inscrit' => $request->query->get('inscrit'),
             'non_inscrit' => $request->query->get('non_inscrit'),
             'passees' => $request->query->get('passees'),
         ];
 
-        // Convertir les dates en objets DateTime si elles sont définies
+//         Convertir les dates en objets DateTime si elles sont définies
         if ($filters['startDate']) {
-            $filters['startDate'] = \DateTime::createFromFormat('Y-m-d H:i:s', $filters['startDate'] . ' 00:00:00');
+            $filters['startDate'] = \DateTime::createFromFormat('Y-m-d', $filters['startDate'] . ' 00:00:00');
         }
-        if ($filters['dateLine']) {
-            $filters['dateLine'] = \DateTime::createFromFormat('Y-m-d H:i:s', $filters['dateLine'] . ' 00:00:00');
+        if ($filters['endDate']) {
+            $filters['endDate'] = \DateTime::createFromFormat('Y-m-d', $filters['endDate'] . ' 00:00:00');
         }
+
 
         $events = $eventRepository->findByFilters($filters, $this->getUser());
 
@@ -212,7 +226,7 @@ public function create(
             return $this->redirectToRoute('home');
         }
         if($event->getDateLine() < new \DateTime('now')){
-            $this->addFlash('danger',"Cette sortie est déjà terminée !");
+            $this->addFlash('danger',"Les inscriptions sont cloturées !");
             return $this->redirectToRoute('home');
         }
         if($event->getStateEvent() !== $stateEventOpen){

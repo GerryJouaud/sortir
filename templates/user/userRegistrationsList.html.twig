@@ -4,24 +4,35 @@
 
 {% block body %}
 
-    <h1>Liste de mes inscriptions:</h1>
-
-    {% if userRegistrationsList.empty %}
-        <h1>Vous n'êtes inscrit à aucune sortie !</h1>
-    {% endif %}
-    {% for eventRegistered in userRegistrationsList %}
 
 
-        <div class="card text-center mb-3" style="width: 18rem;">
-            <div class="card-body">
-                <h5 class="card-title">{{ eventRegistered.name }}</h5>
-                <p class="card-text">{{ eventRegistered.description }}</p>
-                <a href="{{ path('event_details',{"id":eventRegistered.id}) }}" class="btn btn-primary">Afficher </a>
-            </div>
-        </div>
+    <div class="container p-3 mx-auto my-3 d-flex rounded bg-dark">
 
 
-    {% endfor %}
+        {% if userRegistrationsList.empty %}
+            <h1>Vous n'êtes inscrit à aucune sortie !</h1>
+        {% endif %}
+        {% for eventRegistered in userRegistrationsList %}
+                <div class="card mx-3 my-3 col " style="width: 18rem;" >
+                    <div class="card-header">
+                        <h3 class="text-center ">{{ eventRegistered.name }} </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row"></divclass>
+                            <p class="card-text">{{ eventRegistered.description }}</p>
+                            <p class="card-text"> {{ eventRegistered.place.name }} - {{ eventRegistered.place.city.name }} </p>
+                                <div>
+                                    <a href="{{ path('event_details',{"id":eventRegistered.id}) }}" class="btn btn-primary col-auto mx-auto ">Afficher </a>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+     {% endfor %}
+    </div>
+
+
+
+
 
 
 

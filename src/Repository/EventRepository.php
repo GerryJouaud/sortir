@@ -28,14 +28,20 @@ class EventRepository extends ServiceEntityRepository
             $qb->andWhere('e.name LIKE :search')
                 ->setParameter('search', '%' . $filters['search'] . '%');
         }
-        if (!empty($filters['startDate'])) {
-            $qb->andWhere('e.startDate >= :startDate')
-                ->setParameter('startDate', $filters['startDate']);
+//        if (!empty($filters['startDate'])) {
+//            $qb->andWhere('e.startDate = :startDate ')
+//                ->setParameter('startDate', $filters['startDate']);
+//        }
+        if (!empty($filters['startDate']) && !empty($filters['endDate'])) {
+            $qb->where('e.startDate BETWEEN :startDateSearch AND :endDateSearch')
+                ->setParameter('startDateSearch', $filters['startDate']->format('Y-m-d') . ' 00:00:00')
+                ->setParameter('endDateSearch', $filters['endDate']->format('Y-m-d') . ' 23:59:59');
         }
-        if (!empty($filters['dateLine'])) {
-            $qb->andWhere('e.startDate <= :dateLine')
-                ->setParameter('dateLine', $filters['dateLine']);
-        }
+
+//        if (!empty($filters['dateLine'])) {
+//            $qb->andWhere('e.startDate <= :dateLine')
+//                ->setParameter('dateLine', $filters['dateLine']);
+//        }
         if (!empty($filters['organisateur'])) {
             $qb->andWhere('e.organizer = :organizer')
                 ->setParameter('organizer', $user);

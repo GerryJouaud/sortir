@@ -26,13 +26,13 @@
                 </div>
 
                 <div class="col-3">
-                    <label for="start_date">Du :</label>
-                    <input type="date" id="start_date" name="start_date" class="form-control" value="{{ filters.startDate|date('Y-m-d') }}">
+                    <label for="startDate">Du :</label>
+                    <input type="date" id="startDate" name="startDate" class="form-control" value="{{ filters.startDate }}">
                 </div>
 
                 <div class="col-3">
-                    <label for="date_line">Au :</label>
-                    <input type="date" id="date_line" name="date_line" class="form-control" value="{{ filters.dateLine|date('Y-m-d') }}">
+                    <label for="endDate">Au :</label>
+                    <input type="date" id="endDate" name="endDate" class="form-control" value="{{ filters.endDate }}">
                 </div>
             </div>
             <div class="row gx-2">
@@ -66,7 +66,7 @@
             <tr>
                 <th>Nom de la sortie</th>
                 <th>Date de la sortie</th>
-                <th>Clôture</th>
+                <th>Clôture des inscriptions</th>
                 <th>Inscrits/Places</th>
                 <th>État</th>
                 <th>Inscrit</th>
