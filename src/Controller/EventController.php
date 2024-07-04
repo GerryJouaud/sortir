@@ -124,9 +124,15 @@ public function create(
             $event->setStateEvent($stateEventCreated);
 
             if($event->getStartDate() < $today ){
-                $this->addFlash('danger', "La date de début ne peut être dans le passé !");
+                $this->addFlash('danger', "La date de début ne peut pas être antiérieure à ajourd'hui ! !");
                 return $this->redirectToRoute('home');
             }
+
+            if($event->getDateLine() < $today ){
+                $this->addFlash('danger', "La cloture des inscriptions ne peut pas être antiérieure à ajourd'hui ! ");
+                return $this->redirectToRoute('home');
+            }
+
 
             $entityManager->persist($event);
             $entityManager->flush();
