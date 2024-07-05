@@ -24,11 +24,6 @@
                         </div>
 
                         <div class="form-group">
-                            {{ form_label(eventForm.name) }}
-                            {{ form_widget(eventForm.name, {'attr': {'class': 'form-control'}}) }}
-                        </div>
-
-                        <div class="form-group">
                             {{ form_label(eventForm.startDate) }}
                             {{ form_widget(eventForm.startDate, {'attr': {'class': 'form-control'}}) }}
                         </div>
@@ -46,22 +41,29 @@
                         <div class="form-group form-inline">
                             {{ form_label(eventForm.duration) }}
                             {{ form_widget(eventForm.duration, {'attr': {'class': 'form-control'}}) }}
-                            <label class="ml-2">minutes</label>
+{#                            <label class="ml-2">minutes</label>#}
                         </div>
 
 
-
-                        <div class="form-group">
-                            {{ form_label(eventForm.description) }}
-                            {{ form_widget(eventForm.description, {'attr': {'class': 'form-control'}}) }}
-                        </div>
                     </div>
 
                     <div class="col-md-6">
+
+                        <div class="form-group">
+                            {{ form_label(eventForm.name) }}
+                            {{ form_widget(eventForm.name, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+
                         <div class="form-group">
                             {{ form_label(eventForm.campus) }}
                             {{ form_widget(eventForm.campus, {'attr': {'class': 'form-control'}}) }}
                         </div>
+
+                        <div class="form-group">
+                            {{ form_label(eventForm.description) }}
+                            {{ form_widget(eventForm.description, {'attr': {'class': 'form-control', 'style': 'width: 365px; height: 170px;'}}) }}
+                        </div>
+
 
                     </div>
                 </div>
