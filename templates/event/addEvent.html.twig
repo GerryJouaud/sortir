@@ -8,9 +8,9 @@
             <div class="event-addEvent mt-3">
                 <h1 class="card-title text-center mb-4">Créer une sortie</h1>
                 {{ form_start(eventForm) }}
-
-                <div class="row">
-                    <div class="col-md-6">
+            <div class="row">
+                <div class="col-6">
+                    <div class="">
 
                         <div class="d-flex form-group col-md-12">
 
@@ -22,10 +22,9 @@
                                 <a href="{{ path('place_create') }}">Ajouter un lieu</a>
                             </div>
                         </div>
-
                         <div class="form-group">
-                            {{ form_label(eventForm.name) }}
-                            {{ form_widget(eventForm.name, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_label(eventForm.campus) }}
+                            {{ form_widget(eventForm.campus, {'attr': {'class': 'form-control'}}) }}
                         </div>
 
                         <div class="form-group">
@@ -43,29 +42,35 @@
                             {{ form_widget(eventForm.maxParticipants, {'attr': {'class': 'form-control'}}) }}
                         </div>
 
-                        <div class="form-group form-inline">
-                            {{ form_label(eventForm.duration) }}
-                            {{ form_widget(eventForm.duration, {'attr': {'class': 'form-control'}}) }}
-                            <label class="ml-2">minutes</label>
-                        </div>
-
-
-
-                        <div class="form-group">
-                            {{ form_label(eventForm.description) }}
-                            {{ form_widget(eventForm.description, {'attr': {'class': 'form-control'}}) }}
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            {{ form_label(eventForm.campus) }}
-                            {{ form_widget(eventForm.campus, {'attr': {'class': 'form-control'}}) }}
-                        </div>
 
                     </div>
+
+
+
+
+
+
+
                 </div>
+                <div class="col-6">
 
+
+                    <div class="form-group form-inline">
+                        {{ form_label(eventForm.duration) }}
+                        {{ form_widget(eventForm.duration, {'attr': {'class': 'form-control'}}) }}
+
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(eventForm.name) }}
+                        {{ form_widget(eventForm.name, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group h-auto">
+                        {{ form_label(eventForm.description) }}
+                        {{ form_widget(eventForm.description, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+
+                </div>
+                </div>
                 <div class="form-actions mt-4 d-flex justify-content-evenly">
                     <button type="submit" class="btn btn-primary px-4">Enregistrer</button>
                     {#                    <button type="submit" class="btn btn-secondary px-4" formnovalidate>Publier</button>#}
