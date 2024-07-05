@@ -63,14 +63,8 @@ class RegistrationController extends AbstractController
 
             $this->addFlash('success', 'Enregistrement réussi!');
             // Authentification automatique de l'utilisateur après l'inscription
-            return $userAuthenticator->authenticateUser(
-                $user,
-                $eventAuthenticator,
-                $request
-            );
+            return $this->redirectToRoute("user_details", ['id' => $user->getId()]);
 
-            // Optionally, redirect to a specific route after registration
-            // return $this->redirectToRoute('app_main'); // Replace 'app_main' with your main route
         }
 
         return $this->render('registration/register.html.twig', [

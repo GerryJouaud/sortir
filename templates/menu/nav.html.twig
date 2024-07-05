@@ -21,6 +21,15 @@
                     <li class="nav-item">
                         <a class="nav-link active" href="{{ path('user_details',{"id": app.user.id}) }}">Mon Profil</a>
                     </li>
+
+                    {% if app.user %}
+                        {% if app.user.roles[0] == 'ROLE_ADMIN' %}
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{{ path('app_registrationapp_register') }}">Inscrire</a>
+                            </li>
+                        {% endif %}
+                    {%  endif %}
+
                     <li class="nav-item">
                         <a class="nav-link " href="{{ path('user_logout') }}">Se Déconnecter ({{ app.user.firstName }}) </a>
                     </li>
@@ -31,11 +40,7 @@
                     </li>
 
                 {% endif %}
-                {% if app.user and app.user.roles == ["ROLE_ADMIN"] %}
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{ path('app_registrationapp_register') }}">Je M'inscris</a>
-                    </li>
-                {% endif %}
+
             </ul>
 
         </div>
